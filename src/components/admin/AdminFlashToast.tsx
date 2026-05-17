@@ -29,7 +29,7 @@ export function AdminFlashToast({ message }: { message: string | null }) {
 
   return (
     <div
-      className="pointer-events-none fixed bottom-6 right-6 z-[230] max-w-sm animate-fade-rise"
+      className="pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 right-4 z-[230] mx-auto max-w-sm animate-fade-rise sm:left-auto sm:right-6 sm:mx-0"
       role="status"
       aria-live="polite"
     >

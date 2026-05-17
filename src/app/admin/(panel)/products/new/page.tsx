@@ -16,7 +16,7 @@ export default async function NewProductPage() {
       >
         ← Produits
       </Link>
-      <h1 className="mt-4 font-serif text-3xl font-medium tracking-tight">Nouveau produit</h1>
+      <h1 className="admin-page-title mt-4">Nouveau produit</h1>
       <div className="mt-8">
         <ProductEditForm
           ribbons={ribbons.map((r) => ({ id: r.id, label: r.label }))}

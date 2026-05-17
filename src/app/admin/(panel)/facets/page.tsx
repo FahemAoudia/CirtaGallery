@@ -7,7 +7,7 @@ export default async function AdminFacetsPage() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="font-serif text-3xl font-medium tracking-tight">Catégories (colonne gauche)</h1>
+      <h1 className="admin-page-title">Catégories (colonne gauche)</h1>
       <p className="mt-2 text-sm text-cirta-brown/60">
         Ces identifiants doivent correspondre aux valeurs saisies sur chaque produit (liste séparée par
         des virgules).

@@ -1,5 +1,5 @@
 import { AdminFlashToast } from "@/components/admin/AdminFlashToast";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { ADMIN_FLASH_COOKIE } from "@/lib/admin-flash-constants";
 import { getAdminCookieName, verifyAdminJwt, type AdminRole } from "@/lib/auth";
 import { cookies } from "next/headers";
@@ -22,12 +22,9 @@ export default async function AdminPanelLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f4f0e8] text-cirta-brown">
-      <AdminSidebar role={role} />
-      <main className="min-w-0 flex-1 border-l border-cirta-brown/[0.06] bg-gradient-to-br from-cirta-sand via-[#faf7f0] to-cirta-sand/90 px-6 py-8 md:px-10 md:py-11">
-        <div className="mx-auto max-w-6xl">{children}</div>
-      </main>
+    <>
+      <AdminShell role={role}>{children}</AdminShell>
       <AdminFlashToast message={flash} />
-    </div>
+    </>
   );
 }

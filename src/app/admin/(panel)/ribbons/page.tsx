@@ -8,7 +8,7 @@ export default async function AdminRibbonsPage() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="font-serif text-3xl font-medium tracking-tight">Rayons actifs</h1>
+      <h1 className="admin-page-title">Rayons actifs</h1>
       <p className="mt-2 text-sm text-cirta-brown/60">
         Identifiants techniques inchangés (URL <code className="text-xs">ruban=</code>). Le libellé
         s’affiche sur le site. L’image « bandeau » sert uniquement au bloc{" "}

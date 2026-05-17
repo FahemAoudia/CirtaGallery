@@ -7,7 +7,7 @@ export default async function AdminFaqPage() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="font-serif text-3xl font-medium tracking-tight text-cirta-brown">FAQ — widget chat</h1>
+      <h1 className="admin-page-title">FAQ — widget chat</h1>
       <p className="mt-2 text-sm leading-relaxed text-cirta-brown/60">
         Ces paires question / réponse alimentent le petit module « ? » en bas à droite du site public. Les
         entrées désactivées n’apparaissent pas dans le chat.

@@ -14,7 +14,7 @@ export default async function EditFeaturedPage({ params }: { params: Promise<{ i
       <Link href="/admin/featured" className="text-[0.7rem] font-semibold uppercase text-cirta-brown/50">
         ← Salon
       </Link>
-      <h1 className="mt-4 font-serif text-3xl font-medium tracking-tight">Modifier · {piece.title}</h1>
+      <h1 className="admin-page-title mt-4">Modifier · {piece.title}</h1>
       <div className="mt-8">
         <FeaturedEditForm piece={piece} />
       </div>

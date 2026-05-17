@@ -31,7 +31,7 @@ export function ProductEditForm({
   const ribbonChoices = ribbons.filter((r) => r.id !== "all");
 
   return (
-    <form action={saveProduct} className="max-w-xl space-y-5">
+    <form action={saveProduct} className="w-full max-w-xl space-y-5">
       {product ? <input type="hidden" name="id" value={product.id} /> : null}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1">

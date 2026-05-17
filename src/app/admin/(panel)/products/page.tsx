@@ -66,23 +66,20 @@ export default async function AdminProductsPage({
 
   return (
     <div className="max-w-5xl">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="admin-page-header">
         <div>
-          <h1 className="font-serif text-3xl font-medium tracking-tight">Produits</h1>
+          <h1 className="admin-page-title">Produits</h1>
           <p className="mt-1 text-sm text-cirta-brown/60">
             Référence catalogue (SKU), rayons et catégories pour les filtres du site.
           </p>
         </div>
-        <Link
-          href="/admin/products/new"
-          className="border border-cirta-gold/50 bg-cirta-gold/10 px-5 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown transition hover:bg-cirta-gold/20"
-        >
+        <Link href="/admin/products/new" className="admin-btn-primary w-full sm:w-auto">
           + Nouveau
         </Link>
       </div>
 
       <section
-        className="mt-8 rounded-sm border border-cirta-brown/12 bg-white/90 p-4 shadow-sm md:p-5"
+        className="admin-card mt-6 sm:mt-8"
         aria-labelledby="admin-products-filter-title"
       >
         <h2
@@ -196,12 +193,12 @@ export default async function AdminProductsPage({
               : facetIds.map((id) => facetById[id] ?? id).join(" · ");
 
           return (
-            <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-5">
-              <div className="min-w-0">
+            <li key={p.id} className="admin-list-item">
+              <div className="min-w-0 flex-1">
                 <p className="font-mono text-[0.65rem] uppercase tracking-widest text-cirta-gold-dim">
                   {p.sku}
                 </p>
-                <p className="truncate font-medium text-cirta-brown">{p.title}</p>
+                <p className="font-medium leading-snug text-cirta-brown [overflow-wrap:anywhere]">{p.title}</p>
                 <p className="text-[0.72rem] text-cirta-brown/50">
                   {p.published ? "Publié" : "Brouillon"}
                 </p>
@@ -211,10 +208,10 @@ export default async function AdminProductsPage({
                   <span className="font-semibold text-cirta-brown/50">Catégories :</span> {facetLine}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="admin-list-actions">
                 <Link
                   href={`/admin/products/${p.id}`}
-                  className="border border-cirta-brown/20 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] hover:border-cirta-gold"
+                  className="border border-cirta-brown/20 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.1em] hover:border-cirta-gold"
                 >
                   Modifier
                 </Link>
@@ -225,7 +222,7 @@ export default async function AdminProductsPage({
                   <input type="hidden" name="id" value={p.id} />
                   <button
                     type="submit"
-                    className="border border-red-900/25 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-red-900/80 hover:bg-red-900/10"
+                    className="border border-red-900/25 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-red-900/80 hover:bg-red-900/10"
                   >
                     Supprimer
                   </button>

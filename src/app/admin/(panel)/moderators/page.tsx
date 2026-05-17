@@ -44,9 +44,7 @@ export default async function AdminModeratorsPage() {
   return (
     <div className="space-y-10">
       <header>
-        <h1 className="font-serif text-3xl font-medium tracking-tight text-cirta-brown">
-          Équipe & accès
-        </h1>
+        <h1 className="admin-page-title">Équipe & accès</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cirta-brown/60">
           {isAdmin ? (
             <>

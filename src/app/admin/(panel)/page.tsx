@@ -20,38 +20,33 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="max-w-5xl">
-      <h1 className="font-serif text-3xl font-medium tracking-tight text-cirta-brown">
-        Tableau de bord
-      </h1>
+      <h1 className="admin-page-title">Tableau de bord</h1>
       <p className="mt-2 max-w-xl text-sm leading-relaxed text-cirta-brown/65">
         Gérez le catalogue, les filtres, les textes et consultez les inscriptions newsletter / PayPal.
         Les modifications sont visibles sur la page d’accueil après enregistrement.
       </p>
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-3">
         {cards.map((c) => (
           <li key={c.href}>
             <Link
               href={c.href}
-              className="block rounded-sm border border-cirta-brown/10 bg-cirta-black/[0.02] p-6 transition hover:border-cirta-gold/35 hover:shadow-[0_16px_40px_-28px_rgba(0,0,0,0.35)]"
+              className="admin-card block p-4 transition hover:border-cirta-gold/35 hover:shadow-[0_16px_40px_-28px_rgba(0,0,0,0.35)] sm:p-6"
             >
               <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-cirta-brown/45">
                 {c.label}
               </p>
-              <p className="mt-2 font-serif text-3xl text-cirta-brown tabular-nums">{c.value}</p>
+              <p className="mt-1.5 font-serif text-2xl text-cirta-brown tabular-nums sm:mt-2 sm:text-3xl">{c.value}</p>
             </Link>
           </li>
         ))}
       </ul>
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link
-          href="/admin/sections"
-          className="inline-flex border border-cirta-gold/35 bg-cirta-gold/10 px-5 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown transition hover:bg-cirta-gold/20"
-        >
+      <div className="mt-8 flex flex-col gap-2 sm:mt-10 sm:flex-row sm:flex-wrap">
+        <Link href="/admin/sections" className="admin-btn-primary w-full sm:w-auto">
           Blocs page d’accueil
         </Link>
         <Link
           href="/admin/settings"
-          className="inline-flex border border-cirta-brown/20 px-5 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown transition hover:border-cirta-gold hover:text-cirta-gold-dim"
+          className="touch-target inline-flex w-full items-center justify-center border border-cirta-brown/20 px-5 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown transition hover:border-cirta-gold hover:text-cirta-gold-dim sm:w-auto"
         >
           Contenu du site
         </Link>

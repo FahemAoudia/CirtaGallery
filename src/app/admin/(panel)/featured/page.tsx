@@ -8,17 +8,14 @@ export default async function AdminFeaturedListPage() {
 
   return (
     <div className="max-w-4xl">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="admin-page-header">
         <div>
-          <h1 className="font-serif text-3xl font-medium tracking-tight">Salon — mises en avant</h1>
+          <h1 className="admin-page-title">Salon — mises en avant</h1>
           <p className="mt-1 text-sm text-cirta-brown/60">
             Les trois grands blocs sous le catalogue sur la page d’accueil.
           </p>
         </div>
-        <Link
-          href="/admin/featured/new"
-          className="border border-cirta-gold/50 bg-cirta-gold/10 px-5 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.14em]"
-        >
+        <Link href="/admin/featured/new" className="admin-btn-primary w-full sm:w-auto">
           + Nouvelle fiche
         </Link>
       </div>
@@ -26,7 +23,7 @@ export default async function AdminFeaturedListPage() {
         {items.map((f) => (
           <li
             key={f.id}
-            className="flex flex-wrap items-center justify-between gap-3 border border-cirta-brown/10 bg-cirta-black/[0.02] p-4"
+            className="admin-list-item border border-cirta-brown/10 bg-cirta-black/[0.02]"
           >
             <div>
               <p className="font-mono text-[0.6rem] uppercase tracking-widest text-cirta-gold-dim">
@@ -34,7 +31,7 @@ export default async function AdminFeaturedListPage() {
               </p>
               <p className="font-medium text-cirta-brown">{f.title}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="admin-list-actions">
               <Link
                 href={`/admin/featured/${f.id}`}
                 className="border border-cirta-brown/20 px-3 py-1.5 text-[0.65rem] font-semibold uppercase"

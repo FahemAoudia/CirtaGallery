@@ -78,7 +78,7 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-10">
       <header>
-        <h1 className="font-serif text-3xl font-medium tracking-tight text-cirta-brown">Contenu du site</h1>
+        <h1 className="admin-page-title">Contenu du site</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cirta-brown/60">
           Textes d’accueil, bandeau « Notre collection », formulaire de contact (français). L’ordre des grandes
           zones :{" "}

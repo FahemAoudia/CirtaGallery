@@ -15,7 +15,7 @@ export default async function AdminLoginPage() {
     }
   }
   return (
-    <div className="min-h-screen bg-cirta-ink flex items-center justify-center px-6 py-16 text-cirta-sand">
+    <div className="flex min-h-[100dvh] items-center justify-center bg-cirta-ink px-4 py-12 pb-[max(3rem,env(safe-area-inset-bottom))] text-cirta-sand sm:px-6 sm:py-16">
       <div className="pointer-events-none fixed inset-0 texture-silk opacity-[0.12]" aria-hidden />
       <div className="relative w-full max-w-md border border-cirta-gold/25 bg-cirta-black/40 p-8 shadow-[0_32px_80px_-40px_rgba(0,0,0,0.85)] backdrop-blur-sm md:p-10">
         <p className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-cirta-gold">

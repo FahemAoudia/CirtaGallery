@@ -17,7 +17,7 @@ export default async function AdminSectionsPage() {
 
   return (
     <div className="max-w-6xl">
-      <h1 className="font-serif text-3xl font-medium tracking-tight text-cirta-brown">
+      <h1 className="admin-page-title">
         Blocs de la page d’accueil
       </h1>
       <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
