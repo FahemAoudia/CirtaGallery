@@ -4,24 +4,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "@/context/LocaleContext";
 import type { FeaturedPiece } from "@/lib/collection";
+import { resolveSiteText } from "@/lib/cms-resolve";
 import { cmsMirror, featuredUi } from "@/lib/public-ui-i18n";
 import { localizeFeaturedPiece } from "@/lib/catalog-locale";
 
 type FeaturedItemsProps = {
   pieces: FeaturedPiece[];
-  kicker?: string;
-  title?: string;
-  aside?: string;
+  settings?: Record<string, string>;
 };
 
-export function FeaturedItems({ pieces, kicker, title, aside }: FeaturedItemsProps) {
+export function FeaturedItems({ pieces, settings = {} }: FeaturedItemsProps) {
   const { locale } = useLocale();
   const mirror = cmsMirror[locale];
   const fu = featuredUi[locale];
-  const showFr = locale === "fr";
-  const kickerT = showFr ? (kicker ?? mirror.featuredKicker) : mirror.featuredKicker;
-  const titleT = showFr ? (title ?? mirror.featuredTitle) : mirror.featuredTitle;
-  const asideT = showFr ? (aside ?? mirror.featuredAside) : mirror.featuredAside;
+  const kickerT = resolveSiteText(settings, "featured_kicker", locale, mirror.featuredKicker);
+  const titleT = resolveSiteText(settings, "featured_title", locale, mirror.featuredTitle);
+  const asideT = resolveSiteText(settings, "featured_aside", locale, mirror.featuredAside);
 
   return (
     <section
@@ -31,7 +29,7 @@ export function FeaturedItems({ pieces, kicker, title, aside }: FeaturedItemsPro
     >
       <div className="pointer-events-none absolute inset-0 opacity-[0.14] texture-grain" />
 
-      <div className="site-container section-pad">
+      <div className="site-container section-pad md:py-20">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-xl">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.38em] text-cirta-gold">
@@ -66,7 +64,7 @@ export function FeaturedItems({ pieces, kicker, title, aside }: FeaturedItemsPro
                 >
                   <div className="relative">
                     <div className="absolute -inset-px border border-cirta-gold/22" />
-                    <div className="relative aspect-[4/3] w-full overflow-hidden shadow-[0_44px_92px_-42px_rgba(0,0,0,0.78)] lg:aspect-auto lg:h-[min(36vh,320px)]">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden shadow-[0_44px_92px_-42px_rgba(0,0,0,0.78)] max-lg:aspect-[4/3] lg:aspect-auto lg:h-[min(36vh,320px)] sm:max-lg:h-[min(34vh,300px)] max-lg:h-[min(30vh,260px)]">
                       <Image
                         src={p.image}
                         alt={`${p.title} — ${p.meta}`}

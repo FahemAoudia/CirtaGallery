@@ -54,7 +54,7 @@ export function HomePageSections({
               collection={collection}
               ribbonLabels={ribbonLabels}
               sidebarFacets={sidebarFacets}
-              catalogIntro={settings.catalog_intro}
+              settings={settings}
               q={catalogState.q}
               ruban={catalogState.ruban}
               facette={catalogState.facette}
@@ -63,28 +63,16 @@ export function HomePageSections({
         }
         if (k === "featured") {
           return (
-            <FeaturedItems
-              key={s.id}
-              pieces={featuredPieces}
-              kicker={settings.featured_kicker}
-              title={settings.featured_title}
-              aside={settings.featured_aside}
-            />
+            <FeaturedItems key={s.id} pieces={featuredPieces} settings={settings} />
           );
         }
         if (k === "about") {
           return (
-            <About
-              key={s.id}
-              kicker={settings.about_kicker}
-              heading={settings.about_heading}
-              p1={settings.about_p1}
-              p2={settings.about_p2}
-            />
+            <About key={s.id} settings={settings} />
           );
         }
         if (k === "contact") {
-          return <Contact key={s.id} intro={settings.contact_intro} settings={settings} />;
+          return <Contact key={s.id} settings={settings} />;
         }
         if (k === "footer") {
           return <Footer key={s.id} />;

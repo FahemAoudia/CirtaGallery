@@ -16,6 +16,7 @@ import { useCart } from "@/context/CartContext";
 import { useLocale } from "@/context/LocaleContext";
 import { localizeCatalogItem } from "@/lib/catalog-locale";
 import { formatCad } from "@/lib/format-cad";
+import { ProductDimensionsGrid } from "@/components/ProductDimensionsGrid";
 import { productDescriptionPanelClass } from "@/lib/product-description-panel";
 import { productCardCopy, productInspectCopy } from "@/lib/public-ui-i18n";
 
@@ -292,18 +293,17 @@ function ProductInspectDialogPanel() {
               <p className="text-sm leading-relaxed text-cirta-brown/88 sm:text-[0.95rem]">
                 {display.medium}
               </p>
-              {display.depth?.trim() ? (
-                <p className="text-sm leading-relaxed text-cirta-brown/88 sm:text-[0.95rem]">
-                  <span className="font-semibold text-cirta-brown/70">{t.depthLabel}</span>{" "}
-                  {display.depth.trim()}
-                </p>
-              ) : null}
-              {display.weight?.trim() ? (
-                <p className="text-sm leading-relaxed text-cirta-brown/88 sm:text-[0.95rem]">
-                  <span className="font-semibold text-cirta-brown/70">{t.weightLabel}</span>{" "}
-                  {display.weight.trim()}
-                </p>
-              ) : null}
+              <ProductDimensionsGrid
+                depth={display.depth}
+                weight={display.weight}
+                hauteur={display.hauteur}
+                inspect
+                labels={{
+                  depthLabel: t.depthLabel,
+                  weightLabel: t.weightLabel,
+                  hauteurLabel: t.hauteurLabel,
+                }}
+              />
             </div>
 
             {display.histoire?.trim() ? (

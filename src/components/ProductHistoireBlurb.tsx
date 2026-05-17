@@ -12,6 +12,7 @@ export function ProductHistoireBlurb({
   voirPlus,
   voirMoins,
   compact = false,
+  className = "",
 }: {
   text: string;
   label: string;
@@ -19,6 +20,7 @@ export function ProductHistoireBlurb({
   voirMoins: string;
   /** Aperçu court sur cartes catalogue 2 colonnes (mobile). */
   compact?: boolean;
+  className?: string;
 }) {
   const collapseLen = compact ? COLLAPSE_LEN_COMPACT : COLLAPSE_LEN_DEFAULT;
   const needsToggle = useMemo(
@@ -28,12 +30,14 @@ export function ProductHistoireBlurb({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={productDescriptionPanelClass}>
-      <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-cirta-gold-dim">
+    <div
+      className={`${productDescriptionPanelClass} flex h-full min-h-0 flex-col ${className}`.trim()}
+    >
+      <p className="shrink-0 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-cirta-gold-dim">
         {label}
       </p>
       <p
-        className={`mt-2 whitespace-pre-wrap leading-relaxed text-cirta-brown/78 ${
+        className={`mt-2 min-h-0 flex-1 whitespace-pre-wrap leading-relaxed text-cirta-brown/78 ${
           compact ? "text-[0.72rem] leading-snug" : "text-sm"
         } ${needsToggle && !open ? "line-clamp-3" : ""}`}
       >
@@ -43,7 +47,7 @@ export function ProductHistoireBlurb({
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={`mt-2.5 text-left font-semibold uppercase tracking-[0.14em] text-cirta-brown/55 underline decoration-cirta-gold/40 underline-offset-4 transition hover:text-cirta-gold-dim ${
+          className={`mt-2.5 shrink-0 text-left font-semibold uppercase tracking-[0.14em] text-cirta-brown/55 underline decoration-cirta-gold/40 underline-offset-4 transition hover:text-cirta-gold-dim ${
             compact ? "text-[0.62rem]" : "text-[0.72rem]"
           }`}
         >

@@ -73,6 +73,9 @@ async function main() {
           period: item.period,
           origin: item.origin,
           medium: item.medium,
+          depth: item.depth ?? "",
+          weight: item.weight ?? "",
+          hauteur: item.hauteur ?? "",
           image: item.image,
           width: item.width,
           height: item.height,
@@ -159,7 +162,12 @@ async function main() {
   for (const item of collection) {
     await prisma.product.updateMany({
       where: { sku: item.id },
-      data: { priceCad: item.priceCad },
+      data: {
+        priceCad: item.priceCad,
+        ...(item.depth ? { depth: item.depth } : {}),
+        ...(item.weight ? { weight: item.weight } : {}),
+        ...(item.hauteur ? { hauteur: item.hauteur } : {}),
+      },
     });
   }
 

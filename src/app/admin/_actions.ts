@@ -6,7 +6,14 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAdminCookieName, verifyAdminJwt, type AdminJwtPayload } from "@/lib/auth";
 import { HOME_SECTION_DEFINITIONS, homeSectionLabelForKey } from "@/lib/home-sections";
+import {
+  persistSiteSettingI18n,
+  persistSiteSettingsI18nBatch,
+  translateFrenchFields,
+  translationSucceeded,
+} from "@/lib/auto-translate";
 import { CONTACT_CMS_FIELD_META } from "@/lib/contact-settings";
+import { serializeEntityI18n } from "@/lib/content-i18n";
 import { setAdminFlashMessage } from "@/lib/admin-flash";
 import { prisma } from "@/lib/prisma";
 
@@ -36,6 +43,38 @@ function parseFacets(raw: string): string[] {
     .filter(Boolean);
 }
 
+async function flashAfterSave(baseMsg: string, translated: boolean) {
+  await setAdminFlashMessage(
+    translated ? `${baseMsg} — traductions EN / ES / ZH mises à jour.` : baseMsg,
+  );
+}
+
+async function tryPersistEntityTranslations(
+  table: "product" | "featuredPiece" | "faqChatEntry" | "ribbon" | "facet",
+  id: string,
+  fields: Record<string, string>,
+): Promise<boolean> {
+  try {
+    const pack = await translateFrenchFields(fields);
+    if (!translationSucceeded(pack)) return false;
+    const json = serializeEntityI18n(pack);
+    if (table === "product") {
+      await prisma.product.update({ where: { id }, data: { translationsJson: json } });
+    } else if (table === "featuredPiece") {
+      await prisma.featuredPiece.update({ where: { id }, data: { translationsJson: json } });
+    } else if (table === "faqChatEntry") {
+      await prisma.faqChatEntry.update({ where: { id }, data: { translationsJson: json } });
+    } else if (table === "ribbon") {
+      await prisma.ribbon.update({ where: { id }, data: { translationsJson: json } });
+    } else {
+      await prisma.facet.update({ where: { id }, data: { translationsJson: json } });
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function saveProduct(formData: FormData) {
   await requireStaff();
   const id = formData.get("id") as string | null;
@@ -49,6 +88,7 @@ export async function saveProduct(formData: FormData) {
   const medium = String(formData.get("medium") ?? "").trim();
   const depth = String(formData.get("depth") ?? "").trim();
   const weight = String(formData.get("weight") ?? "").trim();
+  const hauteur = String(formData.get("hauteur") ?? "").trim();
   const histoire = String(formData.get("histoire") ?? "").trim();
   const image = String(formData.get("image") ?? "").trim();
   if (!image) {
@@ -69,6 +109,18 @@ export async function saveProduct(formData: FormData) {
   const published = formData.get("published") === "on" || formData.get("published") === "true";
   const priceCad = Math.max(0, Number(formData.get("priceCad")) || 0);
 
+  const productFields = {
+    title,
+    histoire,
+    period,
+    origin,
+    medium,
+    depth,
+    weight,
+    hauteur,
+  };
+
+  let productId = id;
   if (id) {
     await prisma.product.update({
       where: { id },
@@ -80,6 +132,7 @@ export async function saveProduct(formData: FormData) {
         medium,
         depth,
         weight,
+        hauteur,
         histoire,
         image,
         width,
@@ -92,7 +145,7 @@ export async function saveProduct(formData: FormData) {
       },
     });
   } else {
-    await prisma.product.create({
+    const created = await prisma.product.create({
       data: {
         sku,
         title,
@@ -101,6 +154,7 @@ export async function saveProduct(formData: FormData) {
         medium,
         depth,
         weight,
+        hauteur,
         histoire,
         image,
         width,
@@ -112,8 +166,14 @@ export async function saveProduct(formData: FormData) {
         priceCad,
       },
     });
+    productId = created.id;
   }
-  await setAdminFlashMessage("Produit enregistré.");
+
+  const translated =
+    productId != null
+      ? await tryPersistEntityTranslations("product", productId, productFields)
+      : false;
+  await flashAfterSave("Produit enregistré.", translated);
   revalidatePath("/");
   revalidatePath("/admin/products");
 }
@@ -142,7 +202,8 @@ export async function saveRibbon(formData: FormData) {
     create: { id, label, sortOrder, teaserImage },
     update: { label, sortOrder, teaserImage },
   });
-  await setAdminFlashMessage("Rayon enregistré.");
+  const translated = await tryPersistEntityTranslations("ribbon", id, { label });
+  await flashAfterSave("Rayon enregistré.", translated);
   revalidatePath("/");
   revalidatePath("/admin/ribbons");
   revalidatePath("/admin/settings");
@@ -173,7 +234,8 @@ export async function saveFacet(formData: FormData) {
     create: { id, label, sortOrder },
     update: { label, sortOrder },
   });
-  await setAdminFlashMessage("Catégorie enregistrée.");
+  const translated = await tryPersistEntityTranslations("facet", id, { label });
+  await flashAfterSave("Catégorie enregistrée.", translated);
   revalidatePath("/");
   revalidatePath("/admin/facets");
 }
@@ -239,7 +301,13 @@ export async function saveFeatured(formData: FormData) {
       sortOrder,
     },
   });
-  await setAdminFlashMessage("Salon enregistré.");
+  const translated = await tryPersistEntityTranslations("featuredPiece", id, {
+    catalogRef,
+    title,
+    description,
+    meta,
+  });
+  await flashAfterSave("Salon enregistré.", translated);
   revalidatePath("/");
   revalidatePath("/admin/featured");
 }
@@ -264,7 +332,8 @@ export async function saveSiteSetting(formData: FormData) {
     create: { key, value },
     update: { value },
   });
-  await setAdminFlashMessage("Modification enregistrée.");
+  const translated = await persistSiteSettingI18n(key, value);
+  await flashAfterSave("Modification enregistrée.", translated);
   revalidatePath("/");
   revalidatePath("/admin/settings");
 }
@@ -273,8 +342,10 @@ const CONTACT_CMS_KEYS = CONTACT_CMS_FIELD_META.map((f) => f.name);
 
 export async function saveContactCmsBlock(formData: FormData) {
   await requirePrimaryAdmin();
+  const batch: { key: string; value: string }[] = [];
   for (const key of CONTACT_CMS_KEYS) {
     const value = String(formData.get(key) ?? "").trim();
+    batch.push({ key, value });
     if (!value) {
       await prisma.siteSetting.deleteMany({ where: { key } });
     } else {
@@ -285,7 +356,8 @@ export async function saveContactCmsBlock(formData: FormData) {
       });
     }
   }
-  await setAdminFlashMessage("Formulaire contact enregistré.");
+  const translated = await persistSiteSettingsI18nBatch(batch);
+  await flashAfterSave("Formulaire contact enregistré.", translated);
   revalidatePath("/");
   revalidatePath("/admin/settings");
 }
@@ -303,7 +375,7 @@ export async function createFeatured(formData: FormData) {
   if (!image) {
     throw new Error("Image obligatoire (importez un fichier depuis votre ordinateur).");
   }
-  await prisma.featuredPiece.create({
+  const created = await prisma.featuredPiece.create({
     data: {
       catalogRef,
       title,
@@ -315,7 +387,13 @@ export async function createFeatured(formData: FormData) {
       sortOrder: Number(formData.get("sortOrder")) || 0,
     },
   });
-  await setAdminFlashMessage("Élément du salon ajouté.");
+  const translated = await tryPersistEntityTranslations("featuredPiece", created.id, {
+    catalogRef,
+    title,
+    description,
+    meta,
+  });
+  await flashAfterSave("Élément du salon ajouté.", translated);
   revalidatePath("/");
   revalidatePath("/admin/featured");
 }
@@ -448,17 +526,22 @@ export async function saveFaqChatEntry(formData: FormData) {
   if (!question || !answer) {
     throw new Error("Question et réponse obligatoires");
   }
+  let entryId = id;
   if (id) {
     await prisma.faqChatEntry.update({
       where: { id },
       data: { question, answer, sortOrder, enabled },
     });
   } else {
-    await prisma.faqChatEntry.create({
+    const created = await prisma.faqChatEntry.create({
       data: { question, answer, sortOrder, enabled },
     });
+    entryId = created.id;
   }
-  await setAdminFlashMessage("FAQ enregistrée.");
+  const translated = entryId
+    ? await tryPersistEntityTranslations("faqChatEntry", entryId, { question, answer })
+    : false;
+  await flashAfterSave("FAQ enregistrée.", translated);
   revalidatePath("/");
   revalidatePath("/admin/faq");
 }

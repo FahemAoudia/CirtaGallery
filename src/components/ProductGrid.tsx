@@ -290,7 +290,7 @@ export function ProductGrid({
     filtered.length === 0 ? (
       emptyState
     ) : (
-      <div className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:mt-8 sm:gap-x-6 sm:gap-y-12">
+      <div className="mt-6 grid grid-cols-2 items-stretch gap-x-3 gap-y-8 sm:mt-8 sm:gap-x-6 sm:gap-y-12">
         {filtered.map((item) => (
           <ProductCardClient key={item.id} item={item} compact />
         ))}
@@ -301,7 +301,7 @@ export function ProductGrid({
     filtered.length === 0 ? (
       emptyState
     ) : (
-      <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-14 xl:grid-cols-3">
+      <div className="mt-10 grid grid-cols-1 items-stretch gap-x-6 gap-y-12 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-14 xl:grid-cols-3">
         {filtered.map((item) => (
           <ProductCardClient key={item.id} item={item} />
         ))}

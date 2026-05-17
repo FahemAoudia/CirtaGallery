@@ -8,19 +8,14 @@ import {
 } from "@/components/SocialAndContactLinks";
 import { useLocale } from "@/context/LocaleContext";
 import { getContactCopyMerged } from "@/lib/contact-settings";
+import { resolveSiteText } from "@/lib/cms-resolve";
 import { cmsMirror, footerCopy } from "@/lib/public-ui-i18n";
 
-export function Contact({
-  intro = cmsMirror.fr.contactIntro,
-  settings = {},
-}: {
-  intro?: string;
-  settings?: Record<string, string>;
-}) {
+export function Contact({ settings = {} }: { settings?: Record<string, string> }) {
   const { locale } = useLocale();
   const mirror = cmsMirror[locale];
   const t = getContactCopyMerged(locale, settings);
-  const introT = locale === "fr" ? (intro ?? mirror.contactIntro) : mirror.contactIntro;
+  const introT = resolveSiteText(settings, "contact_intro", locale, mirror.contactIntro);
 
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);

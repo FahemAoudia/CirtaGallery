@@ -115,7 +115,7 @@ export function ProductEditForm({
           className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm outline-none focus:border-cirta-gold/50"
         />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
           <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50">
             Profondeur <span className="font-normal normal-case text-cirta-brown/40">(facultatif)</span>
@@ -135,6 +135,18 @@ export function ProductEditForm({
             name="weight"
             defaultValue={product?.weight ?? ""}
             placeholder="ex. 2,3 kg"
+            className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm outline-none focus:border-cirta-gold/50"
+          />
+        </div>
+
+        <div className="col-span-2 space-y-1 sm:col-span-1">
+          <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50">
+            Hauteur <span className="font-normal normal-case text-cirta-brown/40">(facultatif)</span>
+          </label>
+          <input
+            name="hauteur"
+            defaultValue={product?.hauteur ?? ""}
+            placeholder="ex. 28 cm"
             className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm outline-none focus:border-cirta-gold/50"
           />
         </div>

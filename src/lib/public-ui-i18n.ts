@@ -424,6 +424,11 @@ export const productCardCopy: Record<
     voirMoins: string;
     depthLabel: string;
     weightLabel: string;
+    hauteurLabel: string;
+    /** Libellés courts — une seule ligne sur les cartes catalogue. */
+    depthLabelShort: string;
+    weightLabelShort: string;
+    hauteurLabelShort: string;
   }
 > = {
   fr: {
@@ -439,6 +444,10 @@ export const productCardCopy: Record<
     voirMoins: "Voir moins",
     depthLabel: "Profondeur",
     weightLabel: "Poids",
+    hauteurLabel: "Hauteur",
+    depthLabelShort: "Prof.",
+    weightLabelShort: "Poids",
+    hauteurLabelShort: "Haut.",
   },
   en: {
     priceCad: "Price (CAD)",
@@ -453,6 +462,10 @@ export const productCardCopy: Record<
     voirMoins: "Show less",
     depthLabel: "Depth",
     weightLabel: "Weight",
+    hauteurLabel: "Height",
+    depthLabelShort: "Dep.",
+    weightLabelShort: "Wt.",
+    hauteurLabelShort: "Ht.",
   },
   es: {
     priceCad: "Precio (CAD)",
@@ -467,6 +480,10 @@ export const productCardCopy: Record<
     voirMoins: "Ver menos",
     depthLabel: "Profundidad",
     weightLabel: "Peso",
+    hauteurLabel: "Altura",
+    depthLabelShort: "Prof.",
+    weightLabelShort: "Peso",
+    hauteurLabelShort: "Alt.",
   },
   zh: {
     priceCad: "价格（加元）",
@@ -481,6 +498,10 @@ export const productCardCopy: Record<
     voirMoins: "收起",
     depthLabel: "深度",
     weightLabel: "重量",
+    hauteurLabel: "高度",
+    depthLabelShort: "深",
+    weightLabelShort: "重",
+    hauteurLabelShort: "高",
   },
 };
 

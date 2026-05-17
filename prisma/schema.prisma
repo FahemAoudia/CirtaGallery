@@ -43,6 +43,8 @@ model Product {
   depth      String  @default("")
   /** Poids (texte libre, ex. « 2,3 kg ») — optionnel. */
   weight     String  @default("")
+  /** Hauteur (texte libre, ex. « 28 cm ») — optionnel. */
+  hauteur    String  @default("")
   image      String
   width      Int
   height     Int
@@ -52,12 +54,15 @@ model Product {
   priceCad   Float   @default(0)
   sortOrder  Int     @default(0)
   published  Boolean @default(true)
+  /** Traductions EN/ES/ZH (JSON). */
+  translationsJson String @default("{}")
 }
 
 model Facet {
   id        String @id
   label     String
   sortOrder Int    @default(0)
+  translationsJson String @default("{}")
 }
 
 model Ribbon {
@@ -66,6 +71,7 @@ model Ribbon {
   sortOrder Int    @default(0)
   /** Image bandeau « Notre collection » (accueil) — vitrine uniquement, optionnel. */
   teaserImage String @default("")
+  translationsJson String @default("{}")
 }
 
 model FeaturedPiece {
@@ -78,6 +84,7 @@ model FeaturedPiece {
   width       Int
   height      Int
   sortOrder   Int    @default(0)
+  translationsJson String @default("{}")
 }
 
 model SiteSetting {
@@ -92,6 +99,7 @@ model FaqChatEntry {
   answer    String
   sortOrder Int     @default(0)
   enabled   Boolean @default(true)
+  translationsJson String @default("{}")
 }
 
 /** Blocs de la page d’accueil (ordre, visibilité, ajout / suppression). */

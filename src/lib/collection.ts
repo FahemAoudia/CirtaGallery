@@ -1,4 +1,16 @@
 import { ANTIQUE_IMG } from "@/lib/antique-images";
+import type { EntityI18n } from "@/lib/content-i18n";
+
+export type CatalogItemI18nFields = {
+  title?: string;
+  histoire?: string;
+  period?: string;
+  origin?: string;
+  medium?: string;
+  depth?: string;
+  weight?: string;
+  hauteur?: string;
+};
 
 export type CatalogItem = {
   id: string;
@@ -12,6 +24,8 @@ export type CatalogItem = {
   depth?: string;
   /** Poids (texte vitrine), optionnel. */
   weight?: string;
+  /** Hauteur (texte vitrine), optionnel. */
+  hauteur?: string;
   image: string;
   width: number;
   height: number;
@@ -19,6 +33,8 @@ export type CatalogItem = {
   facets: string[];
   /** Prix catalogue en CAD (dollar canadien) */
   priceCad: number;
+  /** Traductions admin (EN/ES/ZH) — optionnel, repli sur maps statiques. */
+  i18n?: EntityI18n<CatalogItemI18nFields>;
 };
 
 export const ribbonLabels: { id: string; label: string }[] = [
@@ -42,13 +58,47 @@ export const sidebarFacets: { id: string; label: string }[] = [
   { id: "art-manuscrits", label: "Art & manuscrits" },
 ];
 
-export const collection: CatalogItem[] = [
+/** Textes « histoire » (FR) — repli si la base est vide ou catalogue statique seul. */
+export const productHistoireFr: Record<string, string> = {
+  "CG-01":
+    "Ce vase illustre la continuité entre les ateliers exportateurs chinois et le goût européen du XIXᵉ siècle. Le paysage lacustre, peint au cobalt sous couverte, reprend les codes des porcelaines de présentation tout en gardant une liberté graphique propre aux commandes d’exportation. Les nuances de bleu et la couronne du col témoignent d’une cuisson maîtrisée.",
+  "CG-02":
+    "Figure de Maitreya dans la continuité des ateliers de vallée : sourire étroit, épaules tombantes, drapé minéral. La dorure à la feuille et les rehauts de pigment rappellent les allers-retours entre rituel monastique et commande laïque.",
+  "CG-03":
+    "Fragment de mobilier ou de brûle-parfum : serres crispées, écailles stylisées, patine verte qui adoucit le métal. Idéal pour une vitrine de matière — entre pierre et bronze — où l’on aime les silhouettes animales résumées en quelques cm.",
+  "CG-04":
+    "Vase de cabinet où le cheval devient motif principal : traits rapides au cobalt, glaçure légèrement granuleuse, pied stable pour une étagère de collection. Une pièce pour amateurs de céramique narrative, entre Chine de commande et goût européen.",
+  "CG-05":
+    "Santo novohispano : bois doré, visage expressif, traces d’estofado sous la patine des siècles. La sculpture populaire mexicaine offre ici un contrepoint chaleureux aux porcelaines du même salon.",
+  "CG-06":
+    "Buste ibérique au modelé vigoureux : barbe traitée en mèches, regard baissé, rehauts métalliques qui captent la lumière. Une présence de cabinet, entre chapelle domestique et bibliothèque d’amateur.",
+  "CG-07":
+    "Ensemble de monnaies classiques : argent et bronze, portraits impériaux, revers cultuels. Parfait pour constituer une vitrine numismatique ou compléter une collection thématique Méditerranée.",
+  "CG-08":
+    "Lustre bohémien à pendeloques : jeu de reflets, armature en laiton patiné, esprit Second Empire. Pour une salle à manger tamisée ou un bureau où l’on aime le bruit léger du cristal quand la maison s’endort.",
+};
+
+export function defaultHistoireForSku(sku: string): string | undefined {
+  return productHistoireFr[sku]?.trim() || undefined;
+}
+
+function withCatalogHistoire(items: CatalogItem[]): CatalogItem[] {
+  return items.map((item) => {
+    const histoire = item.histoire?.trim() || defaultHistoireForSku(item.id);
+    return histoire ? { ...item, histoire } : item;
+  });
+}
+
+const collectionBase: CatalogItem[] = [
   {
     id: "CG-01",
     title: "Vase en porcelaine bleu et blanc — paysage lacustre",
     period: "Fin XIXᵉ siècle (style Ming)",
     origin: "Export chinois · Canton",
     medium: "Porcelaine, cobalt sous couverte",
+    depth: "18 cm",
+    weight: "1,2 kg",
+    hauteur: "32 cm",
     image: ANTIQUE_IMG.cg01,
     width: 880,
     height: 1100,
@@ -62,6 +112,9 @@ export const collection: CatalogItem[] = [
     period: "XVIIIᵉ – XIXᵉ siècle",
     origin: "Atelier himalayen",
     medium: "Bronze doré, polychromie minérale",
+    depth: "14 cm",
+    weight: "2,8 kg",
+    hauteur: "28 cm",
     image: ANTIQUE_IMG.cg02,
     width: 880,
     height: 1100,
@@ -75,6 +128,9 @@ export const collection: CatalogItem[] = [
     period: "Époque République",
     origin: "Chine du Sud",
     medium: "Pierre et bronze à patine verte",
+    depth: "22 cm",
+    weight: "4,1 kg",
+    hauteur: "19 cm",
     image: ANTIQUE_IMG.cg03,
     width: 880,
     height: 990,
@@ -88,6 +144,9 @@ export const collection: CatalogItem[] = [
     period: "Collection ancienne",
     origin: "Réseau marchand Pékin · Shanghai",
     medium: "Glaçure, cobalt, dessin au trait",
+    depth: "16 cm",
+    weight: "0,9 kg",
+    hauteur: "24 cm",
     image: ANTIQUE_IMG.cg04,
     width: 880,
     height: 880,
@@ -101,6 +160,9 @@ export const collection: CatalogItem[] = [
     period: "XVIIIᵉ siècle",
     origin: "Mexique central",
     medium: "Bois de sapin doré, estofado",
+    depth: "12 cm",
+    weight: "1,6 kg",
+    hauteur: "41 cm",
     image: ANTIQUE_IMG.cg05,
     width: 880,
     height: 1100,
@@ -114,6 +176,9 @@ export const collection: CatalogItem[] = [
     period: "XVIIᵉ siècle (atelier)",
     origin: "Tolède · Valence",
     medium: "Bois sculpté, rehauts métalliques",
+    depth: "20 cm",
+    weight: "3,2 kg",
+    hauteur: "36 cm",
     image: ANTIQUE_IMG.cg06,
     width: 880,
     height: 1100,
@@ -201,6 +266,15 @@ export const collection: CatalogItem[] = [
   },
 ];
 
+export const collection: CatalogItem[] = withCatalogHistoire(collectionBase);
+
+export type FeaturedPieceI18nFields = {
+  catalogRef?: string;
+  title?: string;
+  description?: string;
+  meta?: string;
+};
+
 export type FeaturedPiece = {
   id: string;
   catalogRef: string;
@@ -210,6 +284,7 @@ export type FeaturedPiece = {
   image: string;
   width: number;
   height: number;
+  i18n?: EntityI18n<FeaturedPieceI18nFields>;
 };
 
 export const featuredPieces: FeaturedPiece[] = [

@@ -3,31 +3,21 @@
 import Image from "next/image";
 import { useLocale } from "@/context/LocaleContext";
 import { aboutQuote } from "@/lib/site-i18n";
+import { resolveSiteText } from "@/lib/cms-resolve";
 import { aboutSectionUi, cmsMirror } from "@/lib/public-ui-i18n";
 import { ANTIQUE_IMG } from "@/lib/antique-images";
 
-export function About({
-  kicker,
-  heading,
-  p1,
-  p2,
-}: {
-  kicker?: string;
-  heading?: string;
-  p1?: string;
-  p2?: string;
-}) {
+export function About({ settings = {} }: { settings?: Record<string, string> }) {
   const { locale } = useLocale();
   const mirror = cmsMirror[locale];
   const ui = aboutSectionUi[locale];
   const quote = aboutQuote[locale];
   const quoteLang = locale === "zh" ? "zh-Hans" : locale;
 
-  const showFrCms = locale === "fr";
-  const kickerT = showFrCms ? (kicker ?? mirror.aboutKicker) : mirror.aboutKicker;
-  const headingT = showFrCms ? (heading ?? mirror.aboutHeading) : mirror.aboutHeading;
-  const p1T = showFrCms ? (p1 ?? mirror.aboutP1) : mirror.aboutP1;
-  const p2T = showFrCms ? (p2 ?? mirror.aboutP2) : mirror.aboutP2;
+  const kickerT = resolveSiteText(settings, "about_kicker", locale, mirror.aboutKicker);
+  const headingT = resolveSiteText(settings, "about_heading", locale, mirror.aboutHeading);
+  const p1T = resolveSiteText(settings, "about_p1", locale, mirror.aboutP1);
+  const p2T = resolveSiteText(settings, "about_p2", locale, mirror.aboutP2);
 
   return (
     <section

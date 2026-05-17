@@ -15,13 +15,15 @@ export function FaqChatDock() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch("/api/faq", { cache: "no-store" });
+      const res = await fetch(`/api/faq?locale=${encodeURIComponent(locale)}`, {
+        cache: "no-store",
+      });
       const data = (await res.json()) as { items?: FaqRow[] };
       setItems(Array.isArray(data.items) ? data.items : []);
     } catch {
       setItems([]);
     }
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (open) void load();

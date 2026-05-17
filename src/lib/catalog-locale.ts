@@ -1,4 +1,6 @@
 import type { CatalogItem, FeaturedPiece } from "@/lib/collection";
+import { resolveLabel } from "@/lib/cms-resolve";
+import type { SiteTextI18n } from "@/lib/content-i18n";
 import type { SiteLocale } from "@/lib/site-i18n";
 
 const RIBBON: Record<string, Record<Exclude<SiteLocale, "fr">, string>> = {
@@ -375,25 +377,50 @@ const FEATURED: Record<
   },
 };
 
-export function displayRibbonLabel(locale: SiteLocale, id: string, labelFr: string): string {
-  if (locale === "fr") return labelFr;
-  return RIBBON[id]?.[locale] ?? labelFr;
+export function displayRibbonLabel(
+  locale: SiteLocale,
+  id: string,
+  labelFr: string,
+  labelI18n?: SiteTextI18n,
+): string {
+  const staticFallback =
+    locale === "fr" ? undefined : RIBBON[id]?.[locale as Exclude<SiteLocale, "fr">];
+  return resolveLabel(locale, labelFr, labelI18n, staticFallback);
 }
 
-export function displayFacetLabel(locale: SiteLocale, id: string, labelFr: string): string {
-  if (locale === "fr") return labelFr;
-  return FACET[id]?.[locale] ?? labelFr;
+export function displayFacetLabel(
+  locale: SiteLocale,
+  id: string,
+  labelFr: string,
+  labelI18n?: SiteTextI18n,
+): string {
+  const staticFallback =
+    locale === "fr" ? undefined : FACET[id]?.[locale as Exclude<SiteLocale, "fr">];
+  return resolveLabel(locale, labelFr, labelI18n, staticFallback);
 }
 
 export function localizeCatalogItem(locale: SiteLocale, item: CatalogItem): CatalogItem {
   if (locale === "fr") return item;
+  const frHistoire = item.histoire?.trim();
+  const fromDb = item.i18n?.[locale];
+  if (fromDb && Object.keys(fromDb).length > 0) {
+    const merged = { ...item, ...fromDb };
+    if (!merged.histoire?.trim() && frHistoire) merged.histoire = frHistoire;
+    return merged;
+  }
   const t = PRODUCTS[item.id]?.[locale];
   if (!t) return item;
-  return { ...item, ...t };
+  const merged = { ...item, ...t };
+  if (!merged.histoire?.trim() && frHistoire) merged.histoire = frHistoire;
+  return merged;
 }
 
 export function localizeFeaturedPiece(locale: SiteLocale, piece: FeaturedPiece): FeaturedPiece {
   if (locale === "fr") return piece;
+  const fromDb = piece.i18n?.[locale];
+  if (fromDb && Object.keys(fromDb).length > 0) {
+    return { ...piece, ...fromDb };
+  }
   const t = FEATURED[piece.id]?.[locale];
   if (!t) return piece;
   return { ...piece, ...t };

@@ -1,3 +1,4 @@
+import { parseSiteTextI18n, siteI18nStorageKey } from "@/lib/content-i18n";
 import { contactCopy } from "@/lib/public-ui-i18n";
 import type { SiteLocale } from "@/lib/site-i18n";
 
@@ -20,16 +21,19 @@ const CONTACT_UI_TO_FIELD: Record<string, keyof (typeof contactCopy)["fr"]> = {
   contact_ui_footnote: "footnote",
 };
 
-/** Textes du formulaire contact : surcharges CMS en français uniquement. */
+/** Textes du formulaire contact : FR depuis CMS, autres langues depuis traductions auto puis repli statique. */
 export function getContactCopyMerged(
   locale: SiteLocale,
   settings: Record<string, string>,
 ): (typeof contactCopy)[SiteLocale] {
-  const base = contactCopy[locale];
-  if (locale !== "fr") return base;
-  const merged = { ...base };
+  const merged = { ...contactCopy[locale] };
   for (const [settingKey, field] of Object.entries(CONTACT_UI_TO_FIELD)) {
-    const v = settings[settingKey]?.trim();
+    let v: string | undefined;
+    if (locale === "fr") {
+      v = settings[settingKey]?.trim();
+    } else {
+      v = parseSiteTextI18n(settings[siteI18nStorageKey(settingKey)])?.[locale]?.trim();
+    }
     if (v) (merged as Record<string, string>)[field] = v;
   }
   return merged;
