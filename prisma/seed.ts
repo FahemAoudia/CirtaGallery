@@ -8,7 +8,14 @@ import {
 } from "../src/lib/collection";
 import { HOME_SECTION_DEFINITIONS } from "../src/lib/home-sections";
 
-const prisma = new PrismaClient();
+const dbUrl =
+  process.env.DATABASE_URL ??
+  process.env.STORAGE_POSTGRES_PRISMA_URL ??
+  process.env.POSTGRES_PRISMA_URL;
+
+const prisma = new PrismaClient(
+  dbUrl ? { datasources: { db: { url: dbUrl } } } : undefined,
+);
 
 async function main() {
   const adminEmail =

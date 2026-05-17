@@ -11,6 +11,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "admin:sync": "tsx scripts/ensure-admin.ts",
+    "db:remote-setup": "prisma db push && npm run admin:sync",
     "postinstall": "prisma generate"
   },
   "prisma": {
