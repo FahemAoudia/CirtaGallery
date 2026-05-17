@@ -52,7 +52,7 @@ export function AdminShell({ role, children }: AdminShellProps) {
         />
 
         <main className="admin-main min-w-0 flex-1 border-cirta-brown/[0.06] bg-gradient-to-br from-cirta-sand via-[#faf7f0] to-cirta-sand/90 lg:border-l">
-          <div className="admin-content mx-auto w-full max-w-6xl">{children}</div>
+          <div className="admin-content mx-auto w-full min-w-0 max-w-6xl">{children}</div>
         </main>
       </div>
     </div>

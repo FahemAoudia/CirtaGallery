@@ -432,6 +432,20 @@ body {
   background: color-mix(in srgb, white 90%, transparent);
   padding: clamp(0.875rem, 3vw, 1.25rem);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--cirta-brown) 6%, transparent);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-select {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-content {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .admin-btn-primary {

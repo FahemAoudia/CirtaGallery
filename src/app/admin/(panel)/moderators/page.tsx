@@ -42,7 +42,7 @@ export default async function AdminModeratorsPage() {
   const roleLabel = role === "MODERATOR" ? "modérateur" : "administrateur";
 
   return (
-    <div className="space-y-10">
+    <div className="min-w-0 space-y-10">
       <header>
         <h1 className="admin-page-title">Équipe & accès</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cirta-brown/60">
@@ -65,7 +65,7 @@ export default async function AdminModeratorsPage() {
 
       {isAdmin ? (
         <>
-          <section className="rounded-xl border border-cirta-brown/10 bg-white/90 p-6 shadow-sm md:p-8">
+          <section className="min-w-0 overflow-hidden rounded-xl border border-cirta-brown/10 bg-white/90 p-4 shadow-sm sm:p-6 md:p-8">
             <h2 className="font-serif text-xl font-medium text-cirta-brown">Comptes actifs</h2>
             <p className="mt-2 text-sm text-cirta-brown/58">
               {adminCount} administrateur{adminCount > 1 ? "s" : ""} · réinitialisez le mot de passe d’un
@@ -85,15 +85,19 @@ export default async function AdminModeratorsPage() {
                       key={u.id}
                       className="border border-cirta-brown/10 bg-white/60 px-4 py-4 text-sm"
                     >
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <span className="font-mono text-cirta-brown/90">{u.email}</span>
-                          <span className="ml-2 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/40">
-                            {u.role === "MODERATOR" ? "Modérateur" : "Administrateur"}
-                          </span>
-                          {isSelf ? (
-                            <span className="ml-2 text-[0.62rem] text-cirta-gold-dim">(vous)</span>
-                          ) : null}
+                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="break-all font-mono text-[0.78rem] leading-snug text-cirta-brown/90 sm:text-sm">
+                            {u.email}
+                          </p>
+                          <p className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-[0.65rem] leading-snug">
+                            <span className="font-semibold uppercase tracking-[0.1em] text-cirta-brown/40">
+                              {u.role === "MODERATOR" ? "Modérateur" : "Administrateur"}
+                            </span>
+                            {isSelf ? (
+                              <span className="text-cirta-gold-dim">(vous)</span>
+                            ) : null}
+                          </p>
                         </div>
                         {canDelete ? (
                           <form action={deleteStaffAccount}>
@@ -215,7 +219,7 @@ export default async function AdminModeratorsPage() {
               </form>
             </section>
 
-            <section className="rounded-xl border border-cirta-brown/10 bg-white/90 p-6 shadow-sm md:p-8">
+            <section className="min-w-0 overflow-hidden rounded-xl border border-cirta-brown/10 bg-white/90 p-4 shadow-sm sm:p-6 md:p-8">
               <h2 className="font-serif text-xl font-medium text-cirta-brown">Ajouter un modérateur</h2>
               <p className="mt-2 text-sm text-cirta-brown/58">
                 Catalogue, FAQ, abonnés et blocs — sans édition des textes globaux du site.

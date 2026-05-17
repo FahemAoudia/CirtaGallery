@@ -76,7 +76,7 @@ export default async function AdminSettingsPage() {
   const orphanRows = rows.filter((r) => !usedKeys.has(r.key));
 
   return (
-    <div className="space-y-10">
+    <div className="min-w-0 space-y-10">
       <header>
         <h1 className="admin-page-title">Contenu du site</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cirta-brown/60">
@@ -103,15 +103,15 @@ export default async function AdminSettingsPage() {
         </p>
       </header>
 
-      <section className="rounded-xl border border-cirta-brown/10 bg-white/90 p-6 shadow-sm md:p-8">
+      <section className="min-w-0 overflow-hidden rounded-xl border border-cirta-brown/10 bg-white/90 p-4 shadow-sm sm:p-6 md:p-8">
         <h2 className="font-serif text-xl font-medium text-cirta-brown">Bandeau « Notre collection »</h2>
         <p className="mt-2 text-sm text-cirta-brown/58">
           Miniatures sous le titre du hero : purement décoratives. Les fichiers se gèrent par rayon
           (image dédiée, indépendante des fiches produit).
         </p>
-        <form action={saveSiteSetting} className="mt-6 flex flex-wrap items-end gap-4">
+        <form action={saveSiteSetting} className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
           <input type="hidden" name="key" value="collection_teasers_visible" />
-          <div className="space-y-1">
+          <div className="min-w-0 w-full space-y-1 sm:max-w-md sm:flex-1">
             <label
               htmlFor="collection_teasers_visible"
               className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50"
@@ -122,15 +122,18 @@ export default async function AdminSettingsPage() {
               id="collection_teasers_visible"
               name="value"
               defaultValue={teaserOn ? "1" : "0"}
-              className="min-w-[16rem] border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
+              className="admin-select w-full min-w-0 max-w-full border border-cirta-brown/15 bg-white px-3 py-2.5 text-sm"
             >
-              <option value="1">Afficher les photos sous chaque rayon</option>
-              <option value="0">Masquer les photos (titres / liens uniquement)</option>
+              <option value="1">Photos visibles sous chaque rayon</option>
+              <option value="0">Photos masquées (titres / liens seuls)</option>
             </select>
+            <p className="text-[0.65rem] leading-snug text-cirta-brown/45 sm:hidden">
+              {teaserOn ? "Afficher les photos sous chaque rayon" : "Masquer les photos (titres / liens uniquement)"}
+            </p>
           </div>
           <button
             type="submit"
-            className="border border-cirta-gold/45 bg-cirta-gold/12 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.12em]"
+            className="admin-btn-primary w-full shrink-0 sm:w-auto"
           >
             Enregistrer
           </button>

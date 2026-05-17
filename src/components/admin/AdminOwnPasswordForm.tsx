@@ -9,15 +9,20 @@ type AdminOwnPasswordFormProps = {
 
 export function AdminOwnPasswordForm({ sessionEmail, roleLabel }: AdminOwnPasswordFormProps) {
   return (
-    <section className="rounded-xl border border-cirta-brown/10 bg-white/90 p-6 shadow-sm md:p-8">
+    <section className="min-w-0 overflow-hidden rounded-xl border border-cirta-brown/10 bg-white/90 p-4 shadow-sm sm:p-6 md:p-8">
       <h2 className="font-serif text-xl font-medium text-cirta-brown">Mot de passe</h2>
-      <p className="mt-2 text-sm text-cirta-brown/58">
-        Compte : <span className="font-mono text-cirta-brown/80">{sessionEmail || "—"}</span>
+      <div className="mt-2 min-w-0 text-sm text-cirta-brown/58">
+        <span className="block text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/45">
+          Compte
+        </span>
+        <p className="mt-1 min-w-0 break-all font-mono text-[0.78rem] leading-snug text-cirta-brown/85 sm:text-sm">
+          {sessionEmail || "—"}
+        </p>
         {roleLabel ? (
-          <span className="ml-2 text-cirta-brown/45">({roleLabel})</span>
+          <p className="mt-1 text-[0.72rem] text-cirta-brown/45">({roleLabel})</p>
         ) : null}
-      </p>
-      <form action={updateAdminPassword} className="mt-6 max-w-md space-y-4">
+      </div>
+      <form action={updateAdminPassword} className="mt-6 w-full max-w-md space-y-4">
         <div className="space-y-1">
           <label
             htmlFor="currentPassword"
