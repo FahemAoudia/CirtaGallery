@@ -17,17 +17,11 @@ export function paypalScriptLocale(siteLocale: SiteLocale): string {
   }
 }
 
-/** Préremplit pays CA et indicatif téléphonique +1 sur le formulaire carte */
+/** Préremplit le pays CA sur le formulaire carte (indicatif +1 via locale fr_CA / buyerCountry). */
 export function paypalOrderPayerDefaults() {
   return {
     address: {
       country_code: PAYPAL_BUYER_COUNTRY,
-    },
-    phone: {
-      phone_type: "MOBILE" as const,
-      phone_number: {
-        country_code: "1",
-      },
     },
   };
 }
