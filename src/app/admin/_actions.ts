@@ -508,17 +508,21 @@ export async function updateAdminPassword(formData: FormData) {
   redirect("/admin/settings");
 }
 
-export async function createModeratorAccount(formData: FormData) {
+async function createStaffAccount(
+  formData: FormData,
+  role: "ADMIN" | "MODERATOR",
+  label: string,
+) {
   await requirePrimaryAdmin();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   if (!email || !password) {
-    await setAdminFlashMessage("Email et mot de passe du modérateur sont requis.");
+    await setAdminFlashMessage(`Email et mot de passe du ${label} sont requis.`);
     redirect("/admin/moderators");
   }
   if (password.length < ADMIN_PASSWORD_MIN_LENGTH) {
     await setAdminFlashMessage(
-      `Mot de passe modérateur : au moins ${ADMIN_PASSWORD_MIN_LENGTH} caractères.`,
+      `Mot de passe : au moins ${ADMIN_PASSWORD_MIN_LENGTH} caractères.`,
     );
     redirect("/admin/moderators");
   }
@@ -529,27 +533,84 @@ export async function createModeratorAccount(formData: FormData) {
   }
   const passwordHash = await bcrypt.hash(password, 12);
   await prisma.adminUser.create({
-    data: { email, passwordHash, role: "MODERATOR" },
+    data: { email, passwordHash, role },
   });
-  await setAdminFlashMessage(`Modérateur ajouté : ${email}`);
+  await setAdminFlashMessage(`${label} ajouté : ${email}`);
   revalidatePath("/admin/moderators");
   redirect("/admin/moderators");
 }
 
-export async function deleteModeratorAccount(formData: FormData) {
-  await requirePrimaryAdmin();
+export async function createModeratorAccount(formData: FormData) {
+  await createStaffAccount(formData, "MODERATOR", "Modérateur");
+}
+
+export async function createAdminAccount(formData: FormData) {
+  await createStaffAccount(formData, "ADMIN", "Administrateur");
+}
+
+export async function deleteStaffAccount(formData: FormData) {
+  const session = await requirePrimaryAdmin();
   const id = String(formData.get("id") ?? "").trim();
   if (!id) {
     await setAdminFlashMessage("Identifiant manquant.");
     redirect("/admin/moderators");
   }
-  const target = await prisma.adminUser.findUnique({ where: { id } });
-  if (!target || target.role !== "MODERATOR") {
-    await setAdminFlashMessage("Seuls les comptes modérateur peuvent être retirés ainsi.");
+  if (id === session.sub) {
+    await setAdminFlashMessage("Vous ne pouvez pas supprimer votre propre compte.");
     redirect("/admin/moderators");
   }
+  const target = await prisma.adminUser.findUnique({ where: { id } });
+  if (!target) {
+    await setAdminFlashMessage("Compte introuvable.");
+    redirect("/admin/moderators");
+  }
+  if (target.role === "ADMIN") {
+    const adminCount = await prisma.adminUser.count({ where: { role: "ADMIN" } });
+    if (adminCount <= 1) {
+      await setAdminFlashMessage("Impossible de retirer le dernier administrateur.");
+      redirect("/admin/moderators");
+    }
+  }
   await prisma.adminUser.delete({ where: { id } });
-  await setAdminFlashMessage("Modérateur supprimé.");
+  await setAdminFlashMessage(
+    target.role === "MODERATOR" ? "Modérateur supprimé." : "Administrateur supprimé.",
+  );
+  revalidatePath("/admin/moderators");
+  redirect("/admin/moderators");
+}
+
+/** @deprecated Utiliser deleteStaffAccount */
+export async function deleteModeratorAccount(formData: FormData) {
+  return deleteStaffAccount(formData);
+}
+
+export async function resetStaffPassword(formData: FormData) {
+  await requirePrimaryAdmin();
+  const id = String(formData.get("id") ?? "").trim();
+  const next = String(formData.get("newPassword") ?? "");
+  const confirm = String(formData.get("confirmPassword") ?? "");
+  if (!id || !next || !confirm) {
+    await setAdminFlashMessage("Tous les champs du nouveau mot de passe sont requis.");
+    redirect("/admin/moderators");
+  }
+  if (next !== confirm) {
+    await setAdminFlashMessage("La confirmation ne correspond pas au nouveau mot de passe.");
+    redirect("/admin/moderators");
+  }
+  if (next.length < ADMIN_PASSWORD_MIN_LENGTH) {
+    await setAdminFlashMessage(
+      `Le nouveau mot de passe doit contenir au moins ${ADMIN_PASSWORD_MIN_LENGTH} caractères.`,
+    );
+    redirect("/admin/moderators");
+  }
+  const target = await prisma.adminUser.findUnique({ where: { id } });
+  if (!target) {
+    await setAdminFlashMessage("Compte introuvable.");
+    redirect("/admin/moderators");
+  }
+  const passwordHash = await bcrypt.hash(next, 12);
+  await prisma.adminUser.update({ where: { id }, data: { passwordHash } });
+  await setAdminFlashMessage(`Mot de passe mis à jour pour ${target.email}.`);
   revalidatePath("/admin/moderators");
   redirect("/admin/moderators");
 }

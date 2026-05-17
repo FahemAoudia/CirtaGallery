@@ -57,8 +57,8 @@ const adminAccessGroup: (typeof allGroups)[number] = {
   items: [
     {
       href: "/admin/moderators",
-      label: "Modérateurs",
-      desc: "Ajouter ou retirer des comptes modérateur",
+      label: "Équipe & accès",
+      desc: "Admins, modérateurs, mots de passe",
     },
   ],
 };

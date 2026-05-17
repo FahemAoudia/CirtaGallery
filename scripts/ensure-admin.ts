@@ -27,12 +27,12 @@ if (!dbUrl || !dbUrl.startsWith("postgres")) {
 
 const adminEmail =
   process.env.ADMIN_EMAIL?.trim().toLowerCase() || "visionaffaire1@gmail.com";
-const adminPassword = process.env.ADMIN_PASSWORD?.trim();
-
-if (!adminPassword) {
+const adminPasswordRaw = process.env.ADMIN_PASSWORD?.trim();
+if (!adminPasswordRaw) {
   console.error("\n❌ ADMIN_PASSWORD est vide. Définissez-le dans .env ou en variable.\n");
   process.exit(1);
 }
+const adminPassword: string = adminPasswordRaw;
 
 const prisma = new PrismaClient({ datasources: { db: { url: dbUrl } } });
 
