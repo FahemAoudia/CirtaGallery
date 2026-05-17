@@ -23,6 +23,7 @@ export function ProductCardClient({ item, compact = false }: ProductCardClientPr
   const t = productCardCopy[locale];
   const inspect = productInspectCopy[locale];
   const display = useMemo(() => localizeCatalogItem(locale, item), [locale, item]);
+  const histoire = display.histoire?.trim() ?? "";
 
   const canBuy = display.priceCad > 0;
 
@@ -57,18 +58,26 @@ export function ProductCardClient({ item, compact = false }: ProductCardClientPr
           />
         </div>
       </div>
-      <div className={`flex flex-1 flex-col gap-2 px-0.5 ${compact ? "mt-3" : "mt-5 gap-3"}`}>
-        <div className="flex items-start justify-between gap-2">
+      <div className={`flex flex-1 flex-col px-0.5 ${compact ? "mt-2.5 gap-1.5" : "mt-5 gap-3"}`}>
+        <div className={compact ? "space-y-1" : "flex items-start justify-between gap-2"}>
           <button
             type="button"
             onClick={() => open(item)}
-            className={`rounded-sm text-left font-serif font-medium leading-snug tracking-tight text-cirta-brown transition hover:text-cirta-gold-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-cirta-gold/50 ${
-              compact ? "line-clamp-2 text-[0.95rem]" : "text-lg md:text-[1.25rem]"
+            className={`w-full rounded-sm text-left font-serif font-medium tracking-tight text-cirta-brown transition hover:text-cirta-gold-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-cirta-gold/50 ${
+              compact
+                ? "text-[0.88rem] leading-[1.35] [overflow-wrap:anywhere]"
+                : "text-lg leading-snug md:text-[1.25rem]"
             }`}
           >
             {display.title}
           </button>
-          <span className="shrink-0 font-mono text-[0.52rem] uppercase tracking-widest text-cirta-gold-dim sm:text-[0.6rem]">
+          <span
+            className={
+              compact
+                ? "font-mono text-[0.5rem] uppercase tracking-[0.18em] text-cirta-gold-dim/90"
+                : "shrink-0 font-mono text-[0.52rem] uppercase tracking-widest text-cirta-gold-dim sm:text-[0.6rem]"
+            }
+          >
             {display.id}
           </span>
         </div>
@@ -96,20 +105,17 @@ export function ProductCardClient({ item, compact = false }: ProductCardClientPr
             {display.weight.trim()}
           </p>
         ) : null}
-        {display.histoire?.trim() ? (
-          <div className={compact ? "hidden sm:block" : ""}>
-            <ProductHistoireBlurb
-              text={display.histoire.trim()}
-              label={t.descriptionLabel}
-              voirPlus={t.voirPlus}
-              voirMoins={t.voirMoins}
-            />
-          </div>
+        {histoire ? (
+          <ProductHistoireBlurb
+            text={histoire}
+            label={t.descriptionLabel}
+            voirPlus={t.voirPlus}
+            voirMoins={t.voirMoins}
+            compact={compact}
+          />
         ) : null}
         <div
-          className={`mt-auto flex flex-col gap-2 border-t border-cirta-brown/10 pt-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3 sm:pt-3 ${
-            compact ? "" : ""
-          }`}
+          className={`mt-auto flex flex-col gap-1.5 border-t border-cirta-brown/10 pt-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3 sm:pt-3`}
         >
           <div>
             <p className="text-[0.55rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown/45 sm:text-[0.6rem] sm:tracking-[0.18em]">
@@ -117,7 +123,7 @@ export function ProductCardClient({ item, compact = false }: ProductCardClientPr
             </p>
             <p
               className={`font-serif font-medium tabular-nums text-cirta-brown ${
-                compact ? "text-base sm:text-lg" : "text-xl"
+                compact ? "text-[0.95rem] sm:text-lg" : "text-xl"
               }`}
             >
               {canBuy ? formatCad(display.priceCad) : t.onRequest}
@@ -128,7 +134,9 @@ export function ProductCardClient({ item, compact = false }: ProductCardClientPr
               type="button"
               onClick={() => addItem(display, 1)}
               className={`btn-luxury-primary text-cirta-brown ${
-                compact ? "w-full sm:w-auto sm:min-w-[9rem]" : "w-full sm:w-auto sm:min-w-[11rem]"
+                compact
+                  ? "w-full !min-h-9 !px-2.5 !py-1.5 !text-[0.52rem] !tracking-[0.08em] sm:w-auto sm:!min-h-11 sm:!px-3 sm:!py-2 sm:!text-[0.58rem]"
+                  : "w-full sm:w-auto sm:min-w-[11rem]"
               }`}
             >
               {t.addToCart}
