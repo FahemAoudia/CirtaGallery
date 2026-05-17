@@ -35,7 +35,7 @@ export function About({
       aria-labelledby="about-heading"
       className="relative overflow-hidden border-t border-cirta-brown/10 bg-cirta-sand paper-wash texture-grain"
     >
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:px-10 md:py-28 lg:py-32">
+      <div className="site-container section-pad">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.36em] text-cirta-gold-dim">

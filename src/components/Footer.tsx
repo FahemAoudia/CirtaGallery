@@ -31,7 +31,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-cirta-brown/12 bg-cirta-sand paper-wash">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:px-10 md:py-20">
+      <div className="site-container section-pad-tight md:py-20">
         <div className="grid grid-cols-1 gap-12 md:gap-14 lg:grid-cols-12 lg:gap-x-10 xl:gap-x-14">
           <div className="min-w-0 lg:col-span-4">
             <Link

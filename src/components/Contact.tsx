@@ -38,7 +38,7 @@ export function Contact({
         aria-hidden
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-24 md:px-10 md:py-28">
+      <div className="site-container section-pad relative">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-4">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.36em] text-cirta-gold">
@@ -182,7 +182,7 @@ export function Contact({
                       <button
                         type="submit"
                         disabled={busy}
-                        className="inline-flex items-center justify-center border border-cirta-gold bg-cirta-gold px-10 py-3.5 text-[0.72rem] font-bold uppercase tracking-[0.18em] text-cirta-brown transition hover:bg-cirta-brown hover:text-cirta-sand disabled:opacity-50"
+                        className="btn-luxury-ink w-full disabled:opacity-50 sm:w-auto"
                       >
                         {busy ? t.submitSending : t.submit}
                       </button>

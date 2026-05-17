@@ -11,7 +11,12 @@ import { formatCad } from "@/lib/format-cad";
 import { useProductInspect } from "@/components/ProductInspectDialog";
 import { productCardCopy, productInspectCopy } from "@/lib/public-ui-i18n";
 
-export function ProductCardClient({ item }: { item: CatalogItem }) {
+type ProductCardClientProps = {
+  item: CatalogItem;
+  compact?: boolean;
+};
+
+export function ProductCardClient({ item, compact = false }: ProductCardClientProps) {
   const { addItem } = useCart();
   const { open } = useProductInspect();
   const { locale } = useLocale();
@@ -23,7 +28,7 @@ export function ProductCardClient({ item }: { item: CatalogItem }) {
 
   return (
     <article className="product-card group relative flex flex-col">
-      <div className="relative overflow-hidden rounded-sm border border-cirta-brown/12 bg-gradient-to-b from-cirta-sand to-cirta-sand/90 shadow-[0_24px_48px_-32px_rgba(15,15,15,0.5)] transition duration-500 group-hover:border-cirta-gold/40 group-hover:shadow-[0_32px_64px_-28px_rgba(15,15,15,0.55)]">
+      <div className="relative overflow-hidden rounded-sm border border-cirta-brown/12 bg-gradient-to-b from-cirta-sand to-cirta-sand/90 shadow-[0_16px_32px_-24px_rgba(15,15,15,0.45)] transition duration-500 group-hover:border-cirta-gold/40 sm:shadow-[0_24px_48px_-32px_rgba(15,15,15,0.5)]">
         <div className="pointer-events-none absolute inset-0 z-10 opacity-0 transition group-hover:opacity-100">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cirta-gold/75 to-transparent" />
         </div>
@@ -34,7 +39,11 @@ export function ProductCardClient({ item }: { item: CatalogItem }) {
             width={display.width}
             height={display.height}
             className="h-full w-full object-cover transition duration-[1.1s] group-hover:scale-[1.04]"
-            sizes="(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 88vw"
+            sizes={
+              compact
+                ? "(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 46vw"
+                : "(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 88vw"
+            }
           />
           <div
             className="pointer-events-none absolute inset-0 bg-gradient-to-t from-cirta-brown/30 via-transparent to-transparent opacity-70"
@@ -48,51 +57,69 @@ export function ProductCardClient({ item }: { item: CatalogItem }) {
           />
         </div>
       </div>
-      <div className="mt-5 flex flex-1 flex-col gap-3 px-0.5">
-        <div className="flex items-start justify-between gap-3">
+      <div className={`flex flex-1 flex-col gap-2 px-0.5 ${compact ? "mt-3" : "mt-5 gap-3"}`}>
+        <div className="flex items-start justify-between gap-2">
           <button
             type="button"
             onClick={() => open(item)}
-            className="rounded-sm text-left font-serif text-lg font-medium leading-snug tracking-tight text-cirta-brown transition hover:text-cirta-gold-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-cirta-gold/50 md:text-[1.25rem]"
+            className={`rounded-sm text-left font-serif font-medium leading-snug tracking-tight text-cirta-brown transition hover:text-cirta-gold-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-cirta-gold/50 ${
+              compact ? "line-clamp-2 text-[0.95rem]" : "text-lg md:text-[1.25rem]"
+            }`}
           >
             {display.title}
           </button>
-          <span className="shrink-0 font-mono text-[0.6rem] uppercase tracking-widest text-cirta-gold-dim">
+          <span className="shrink-0 font-mono text-[0.52rem] uppercase tracking-widest text-cirta-gold-dim sm:text-[0.6rem]">
             {display.id}
           </span>
         </div>
-        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/42">
+        <p
+          className={`font-semibold uppercase tracking-[0.12em] text-cirta-brown/42 ${
+            compact ? "text-[0.58rem] leading-snug" : "text-[0.68rem] tracking-[0.14em]"
+          }`}
+        >
           {display.period}
-          <span className="mx-2 text-cirta-gold/55">·</span>
+          <span className="mx-1.5 text-cirta-gold/55">·</span>
           {display.origin}
         </p>
-        <p className="text-sm leading-relaxed text-cirta-brown/65">{display.medium}</p>
+        <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden sm:block" : ""}`}>
+          {display.medium}
+        </p>
         {display.depth?.trim() ? (
-          <p className="text-sm leading-relaxed text-cirta-brown/65">
+          <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden sm:block" : ""}`}>
             <span className="font-semibold text-cirta-brown/55">{t.depthLabel}</span>{" "}
             {display.depth.trim()}
           </p>
         ) : null}
         {display.weight?.trim() ? (
-          <p className="text-sm leading-relaxed text-cirta-brown/65">
+          <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden sm:block" : ""}`}>
             <span className="font-semibold text-cirta-brown/55">{t.weightLabel}</span>{" "}
             {display.weight.trim()}
           </p>
         ) : null}
         {display.histoire?.trim() ? (
-          <ProductHistoireBlurb
-            text={display.histoire.trim()}
-            label={t.descriptionLabel}
-            voirPlus={t.voirPlus}
-            voirMoins={t.voirMoins}
-          />
+          <div className={compact ? "hidden sm:block" : ""}>
+            <ProductHistoireBlurb
+              text={display.histoire.trim()}
+              label={t.descriptionLabel}
+              voirPlus={t.voirPlus}
+              voirMoins={t.voirMoins}
+            />
+          </div>
         ) : null}
-        <div className="mt-auto flex flex-col gap-3 border-t border-cirta-brown/10 pt-3 sm:flex-row sm:items-end sm:justify-between">
+        <div
+          className={`mt-auto flex flex-col gap-2 border-t border-cirta-brown/10 pt-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3 sm:pt-3 ${
+            compact ? "" : ""
+          }`}
+        >
           <div>
-            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-cirta-brown/45">
+            <p className="text-[0.55rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown/45 sm:text-[0.6rem] sm:tracking-[0.18em]">
               {t.priceCad}
             </p>
-            <p className="font-serif text-xl font-medium tabular-nums text-cirta-brown">
+            <p
+              className={`font-serif font-medium tabular-nums text-cirta-brown ${
+                compact ? "text-base sm:text-lg" : "text-xl"
+              }`}
+            >
               {canBuy ? formatCad(display.priceCad) : t.onRequest}
             </p>
           </div>
@@ -100,7 +127,9 @@ export function ProductCardClient({ item }: { item: CatalogItem }) {
             <button
               type="button"
               onClick={() => addItem(display, 1)}
-              className="min-h-11 w-full border border-cirta-gold/50 bg-cirta-gold/12 px-4 py-2.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown transition hover:bg-cirta-gold/22 sm:w-auto sm:min-w-[11rem]"
+              className={`btn-luxury-primary text-cirta-brown ${
+                compact ? "w-full sm:w-auto sm:min-w-[9rem]" : "w-full sm:w-auto sm:min-w-[11rem]"
+              }`}
             >
               {t.addToCart}
             </button>

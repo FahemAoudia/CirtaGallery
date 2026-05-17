@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { HeroActions } from "@/components/HeroActions";
 import { HeroLocale } from "@/components/HeroLocale";
+import { HeroMobileNav } from "@/components/HeroMobileNav";
 import { useLocale } from "@/context/LocaleContext";
 import { buildCatalogHref } from "@/lib/filter-catalog";
 import { displayRibbonLabel } from "@/lib/catalog-locale";
@@ -54,9 +55,9 @@ export function Hero({
       />
       <div className="pointer-events-none absolute inset-0 corner-ornament" aria-hidden />
 
-      <div className="relative z-20 mx-auto w-full max-w-7xl px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
+      <div className="site-container relative z-20 w-full pt-4 md:pt-8">
         <div className="flex flex-col gap-4 md:gap-5">
-          <div className="flex flex-wrap items-start justify-between gap-3 md:items-center">
+          <div className="flex items-center justify-between gap-3">
             <Link
               href="/"
               className="group flex shrink-0 items-center gap-3 sm:gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-cirta-gold/60"
@@ -73,7 +74,14 @@ export function Hero({
                 {h.brandSubtitle}
               </span>
             </Link>
-            <HeroActions />
+            <HeroMobileNav nav={nav} />
+            <div className="hidden xl:block">
+              <HeroActions />
+            </div>
+          </div>
+
+          <div className="xl:hidden">
+            <HeroActions compact />
           </div>
 
           <form
@@ -133,27 +141,13 @@ export function Hero({
             ))}
           </nav>
 
-          <nav
-            aria-label={h.navMobileAria}
-            className="flex gap-3 overflow-x-auto pb-1 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-cirta-sand/62 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-5 sm:text-[0.6rem] xl:hidden [&::-webkit-scrollbar]:hidden"
-          >
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="shrink-0 border-b border-transparent pb-1 text-cirta-sand/80 transition hover:border-cirta-gold/45 hover:text-cirta-gold"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
         </div>
       </div>
 
-      <div className="relative z-10 mx-auto grid max-w-7xl flex-1 items-center gap-12 px-4 pb-10 pt-8 sm:px-6 md:grid-cols-12 md:gap-10 md:px-10 md:pb-20 md:pt-12">
+      <div className="site-container relative z-10 grid flex-1 items-center gap-10 pb-10 pt-6 sm:gap-12 md:grid-cols-12 md:gap-10 md:pb-20 md:pt-12">
         <div className="relative md:col-span-5">
-          <HeroLocale />
-          <dl className="animate-fade-rise delay-4 mt-14 grid max-w-md gap-4 border-t border-white/10 pt-8 text-sm text-cirta-sand/58">
+          <HeroLocale compact />
+          <dl className="hero-mobile-meta animate-fade-rise delay-4 mt-10 hidden max-w-md gap-4 border-t border-white/10 pt-8 text-sm text-cirta-sand/58 sm:mt-14 sm:grid md:grid">
             <div className="flex justify-between gap-6">
               <dt className="font-medium uppercase tracking-[0.15em] text-cirta-sand/38">
                 {h.expertise}
@@ -185,12 +179,12 @@ export function Hero({
                   width={1100}
                   height={1400}
                   priority
-                  className="h-[min(58vh,520px)] w-full object-cover md:h-[min(62vh,600px)]"
+                  className="aspect-[4/5] max-h-[min(52svh,480px)] w-full object-cover md:max-h-[min(62vh,600px)] md:aspect-auto md:h-[min(62vh,600px)]"
                   sizes="(min-width: 768px) 44vw, 100vw"
                 />
               </div>
               <div
-                className="animate-float-soft absolute -bottom-8 -left-6 z-20 w-[42%] max-w-[220px] border border-cirta-gold/35 bg-cirta-black/55 p-1 shadow-[0_28px_60px_-28px_rgba(0,0,0,0.9)] md:-left-10"
+                className="hero-float-accent animate-float-soft absolute -bottom-8 -left-6 z-20 w-[42%] max-w-[220px] border border-cirta-gold/35 bg-cirta-black/55 p-1 shadow-[0_28px_60px_-28px_rgba(0,0,0,0.9)] md:-left-10"
                 style={{ animationDelay: "0.6s" }}
               >
                 <Image
@@ -205,7 +199,7 @@ export function Hero({
                 </p>
               </div>
               <div
-                className="animate-float-soft absolute -right-4 top-10 z-20 w-[38%] max-w-[200px] border border-cirta-gold/30 bg-cirta-black/50 p-1 shadow-[0_24px_50px_-24px_rgba(0,0,0,0.85)] md:-right-8 md:top-14"
+                className="hero-float-accent animate-float-soft absolute -right-4 top-10 z-20 w-[38%] max-w-[200px] border border-cirta-gold/30 bg-cirta-black/50 p-1 shadow-[0_24px_50px_-24px_rgba(0,0,0,0.85)] md:-right-8 md:top-14"
                 style={{ animationDelay: "1.1s" }}
               >
                 <Image
@@ -220,7 +214,7 @@ export function Hero({
                 </p>
               </div>
             </div>
-            <p className="mt-12 max-w-md text-[0.72rem] leading-relaxed text-cirta-sand/45">
+            <p className="mt-8 hidden max-w-md text-[0.72rem] leading-relaxed text-cirta-sand/45 md:mt-12 md:block">
               {h.heroAsideParagraph}
             </p>
           </div>
@@ -228,13 +222,13 @@ export function Hero({
       </div>
 
       <div className="relative z-20 border-y border-cirta-gold/35 bg-cirta-sand/95 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.35)]">
-        <div className="mx-auto max-w-7xl px-6 py-5 md:px-10 md:py-6">
-          <p className="text-center text-[0.68rem] font-bold uppercase tracking-[0.38em] text-cirta-brown">
+        <div className="site-container py-5 md:py-6">
+          <p className="text-center section-kicker text-cirta-brown">
             {h.collectionBarTitle}
           </p>
           <div className="ornament-rule mx-auto my-4 max-w-md opacity-70" />
           <nav aria-label={h.collectionCardsNavAria} className="mt-5 md:mt-6">
-            <ul className="mx-auto flex max-w-6xl flex-wrap justify-center gap-x-0 gap-y-10 md:gap-y-9 lg:flex-nowrap lg:justify-between lg:gap-y-0">
+            <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 sm:gap-y-9 lg:flex lg:flex-nowrap lg:justify-between lg:gap-y-0">
               {collectionRibbonItems.map((r, index) => {
                 const label = displayRibbonLabel(locale, r.id, r.label);
                 const href = `${ribbonOnly(r.id)}#collection`;
@@ -244,7 +238,7 @@ export function Hero({
                 return (
                   <li
                     key={r.id}
-                    className="relative flex w-[48%] flex-col sm:w-[32%] md:w-[31%] md:max-w-[13.5rem] lg:max-w-none lg:basis-0 lg:flex-1"
+                    className="relative flex flex-col lg:max-w-none lg:basis-0 lg:flex-1"
                   >
                     <Link
                       href={href}

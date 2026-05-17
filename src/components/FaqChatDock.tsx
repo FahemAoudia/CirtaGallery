@@ -28,7 +28,7 @@ export function FaqChatDock() {
   }, [open, load]);
 
   return (
-    <div className="fixed bottom-5 right-5 z-[79] flex flex-col items-end gap-2 sm:bottom-6 sm:right-6">
+    <div className="safe-bottom-fab fixed right-4 z-[79] flex flex-col items-end gap-2 sm:right-6">
       {open ? (
         <div
           className="flex w-[min(22rem,calc(100vw-2.5rem))] max-h-[min(28rem,72dvh)] flex-col overflow-hidden rounded-lg border border-cirta-gold/40 bg-gradient-to-b from-cirta-ink via-cirta-ink to-[#151210] text-cirta-sand shadow-[0_28px_64px_-28px_rgba(0,0,0,0.85)]"

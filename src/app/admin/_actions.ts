@@ -24,7 +24,7 @@ async function requirePrimaryAdmin(): Promise<AdminJwtPayload> {
   const session = await requireStaff();
   if (session.role !== "ADMIN") {
     await setAdminFlashMessage("Cette action est réservée à l’administrateur principal.");
-    redirect("/admin/settings");
+    redirect("/admin/moderators");
   }
   return session;
 }
@@ -480,32 +480,32 @@ export async function updateAdminPassword(formData: FormData) {
   const confirm = String(formData.get("confirmPassword") ?? "");
   if (!current || !next || !confirm) {
     await setAdminFlashMessage("Remplissez tous les champs du mot de passe.");
-    redirect("/admin/settings");
+    redirect("/admin/moderators");
   }
   if (next !== confirm) {
     await setAdminFlashMessage("La confirmation ne correspond pas au nouveau mot de passe.");
-    redirect("/admin/settings");
+    redirect("/admin/moderators");
   }
   if (next.length < ADMIN_PASSWORD_MIN_LENGTH) {
     await setAdminFlashMessage(
       `Le nouveau mot de passe doit contenir au moins ${ADMIN_PASSWORD_MIN_LENGTH} caractères.`,
     );
-    redirect("/admin/settings");
+    redirect("/admin/moderators");
   }
   const user = await prisma.adminUser.findUnique({ where: { id: session.sub } });
   if (!user) {
     await setAdminFlashMessage("Compte introuvable.");
-    redirect("/admin/settings");
+    redirect("/admin/moderators");
   }
   const ok = await bcrypt.compare(current, user.passwordHash);
   if (!ok) {
     await setAdminFlashMessage("Mot de passe actuel incorrect.");
-    redirect("/admin/settings");
+    redirect("/admin/moderators");
   }
   const passwordHash = await bcrypt.hash(next, 12);
   await prisma.adminUser.update({ where: { id: session.sub }, data: { passwordHash } });
   await setAdminFlashMessage("Mot de passe mis à jour.");
-  redirect("/admin/settings");
+  redirect("/admin/moderators");
 }
 
 async function createStaffAccount(

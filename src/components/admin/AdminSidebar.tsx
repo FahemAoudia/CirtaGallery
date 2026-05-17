@@ -70,8 +70,14 @@ function groupsForRole(role: AdminRole) {
   }
   const withoutContent = allGroups.filter((g) => g.title !== "Contenu & textes");
   const accountGroup: (typeof allGroups)[number] = {
-    title: "Compte",
-    items: [{ href: "/admin/settings", label: "Mot de passe", desc: "Modifier votre accès" }],
+    title: "Accès & équipe",
+    items: [
+      {
+        href: "/admin/moderators",
+        label: "Équipe & accès",
+        desc: "Mot de passe, comptes",
+      },
+    ],
   };
   const [first, ...rest] = withoutContent;
   return [first, accountGroup, ...rest];

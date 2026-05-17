@@ -31,7 +31,7 @@ export function FeaturedItems({ pieces, kicker, title, aside }: FeaturedItemsPro
     >
       <div className="pointer-events-none absolute inset-0 opacity-[0.14] texture-grain" />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 md:px-10 md:py-20">
+      <div className="site-container section-pad">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-xl">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.38em] text-cirta-gold">
@@ -66,7 +66,7 @@ export function FeaturedItems({ pieces, kicker, title, aside }: FeaturedItemsPro
                 >
                   <div className="relative">
                     <div className="absolute -inset-px border border-cirta-gold/22" />
-                    <div className="relative h-[min(30vh,260px)] w-full overflow-hidden shadow-[0_44px_92px_-42px_rgba(0,0,0,0.78)] sm:h-[min(34vh,300px)] lg:h-[min(36vh,320px)]">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden shadow-[0_44px_92px_-42px_rgba(0,0,0,0.78)] lg:aspect-auto lg:h-[min(36vh,320px)]">
                       <Image
                         src={p.image}
                         alt={`${p.title} — ${p.meta}`}

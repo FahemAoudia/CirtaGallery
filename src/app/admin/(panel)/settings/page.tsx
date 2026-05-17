@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
-import {
-  saveContactCmsBlock,
-  saveSiteSetting,
-  updateAdminPassword,
-} from "@/app/admin/_actions";
+import { redirect } from "next/navigation";
+import { saveContactCmsBlock, saveSiteSetting } from "@/app/admin/_actions";
 import { CONTACT_CMS_FIELD_META } from "@/lib/contact-settings";
 import { getAdminCookieName, verifyAdminJwt, type AdminRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
-const PASSWORD_MIN = 10;
 
 const SIMPLE_TEXT_LABELS: Record<string, string> = {
   catalog_intro: "Catalogue — paragraphe sous le titre",
@@ -56,21 +51,19 @@ export default async function AdminSettingsPage() {
   const jar = await cookies();
   const token = jar.get(getAdminCookieName())?.value;
   let role: AdminRole = "ADMIN";
-  let sessionEmail = "";
   if (token) {
     try {
       const p = await verifyAdminJwt(token);
       role = p.role;
-      sessionEmail = p.email;
     } catch {
       /* middleware normalement déjà passé */
     }
   }
+  if (role === "MODERATOR") {
+    redirect("/admin/moderators");
+  }
 
-  const rows =
-    role === "ADMIN"
-      ? await prisma.siteSetting.findMany({ orderBy: { key: "asc" } })
-      : [];
+  const rows = await prisma.siteSetting.findMany({ orderBy: { key: "asc" } });
   const byKey = Object.fromEntries(rows.map((r) => [r.key, r.value])) as Record<string, string>;
   const teaserOn = (byKey.collection_teasers_visible ?? "1") !== "0";
 
@@ -85,124 +78,31 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-10">
       <header>
-        <h1 className="font-serif text-3xl font-medium tracking-tight text-cirta-brown">
-          {role === "ADMIN" ? "Contenu du site" : "Compte"}
-        </h1>
+        <h1 className="font-serif text-3xl font-medium tracking-tight text-cirta-brown">Contenu du site</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cirta-brown/60">
-          {role === "ADMIN" ? (
-            <>
-              Textes d’accueil, bandeau « Notre collection », formulaire de contact (français). L’ordre des
-              grandes zones :{" "}
-              <Link
-                href="/admin/sections"
-                className="font-medium text-cirta-brown underline-offset-2 hover:underline"
-              >
-                Blocs & ordre
-              </Link>
-              . Les images des rayons (vitrine uniquement) :{" "}
-              <Link href="/admin/ribbons" className="font-medium text-cirta-brown underline-offset-2 hover:underline">
-                Rayons
-              </Link>
-              . Les comptes modérateurs :{" "}
-              <Link
-                href="/admin/moderators"
-                className="font-medium text-cirta-brown underline-offset-2 hover:underline"
-              >
-                Modérateurs
-              </Link>
-              .
-            </>
-          ) : (
-            <>
-              Vous êtes connecté en tant que <span className="font-medium text-cirta-brown">{sessionEmail}</span>{" "}
-              (modérateur). Vous pouvez modifier votre mot de passe ci-dessous ; la rédaction des textes publics
-              reste réservée à l’administrateur principal.
-            </>
-          )}
-        </p>
-      </header>
-
-      <section className="rounded-xl border border-cirta-brown/10 bg-white/90 p-6 shadow-sm md:p-8">
-        <h2 className="font-serif text-xl font-medium text-cirta-brown">Mot de passe</h2>
-        <p className="mt-2 text-sm text-cirta-brown/58">
-          Compte : <span className="font-mono text-cirta-brown/80">{sessionEmail || "—"}</span>
-          {role === "MODERATOR" ? (
-            <span className="ml-2 text-cirta-brown/45">(rôle modérateur)</span>
-          ) : null}
-        </p>
-        <form action={updateAdminPassword} className="mt-6 max-w-md space-y-4">
-          <div className="space-y-1">
-            <label
-              htmlFor="currentPassword"
-              className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50"
-            >
-              Mot de passe actuel
-            </label>
-            <input
-              id="currentPassword"
-              name="currentPassword"
-              type="password"
-              autoComplete="current-password"
-              required
-              className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
-            />
-          </div>
-          <div className="space-y-1">
-            <label
-              htmlFor="newPassword"
-              className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50"
-            >
-              Nouveau mot de passe
-            </label>
-            <input
-              id="newPassword"
-              name="newPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={PASSWORD_MIN}
-              className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
-            />
-            <p className="text-[0.65rem] text-cirta-brown/45">Au moins {PASSWORD_MIN} caractères.</p>
-          </div>
-          <div className="space-y-1">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50"
-            >
-              Confirmer le nouveau mot de passe
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={PASSWORD_MIN}
-              className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
-            />
-          </div>
-          <button
-            type="submit"
-            className="border border-cirta-gold/45 bg-cirta-gold/12 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.12em]"
+          Textes d’accueil, bandeau « Notre collection », formulaire de contact (français). L’ordre des grandes
+          zones :{" "}
+          <Link
+            href="/admin/sections"
+            className="font-medium text-cirta-brown underline-offset-2 hover:underline"
           >
-            Mettre à jour le mot de passe
-          </button>
-        </form>
-      </section>
-
-      {role === "ADMIN" ? null : (
-        <p className="text-sm text-cirta-brown/55">
-          Raccourci vers le catalogue :{" "}
-          <Link href="/admin/products" className="font-medium text-cirta-brown underline-offset-2 hover:underline">
-            Produits
+            Blocs & ordre
+          </Link>
+          . Les images des rayons (vitrine uniquement) :{" "}
+          <Link href="/admin/ribbons" className="font-medium text-cirta-brown underline-offset-2 hover:underline">
+            Rayons
+          </Link>
+          . Comptes et mots de passe :{" "}
+          <Link
+            href="/admin/moderators"
+            className="font-medium text-cirta-brown underline-offset-2 hover:underline"
+          >
+            Équipe & accès
           </Link>
           .
         </p>
-      )}
+      </header>
 
-      {role === "ADMIN" ? (
-        <>
       <section className="rounded-xl border border-cirta-brown/10 bg-white/90 p-6 shadow-sm md:p-8">
         <h2 className="font-serif text-xl font-medium text-cirta-brown">Bandeau « Notre collection »</h2>
         <p className="mt-2 text-sm text-cirta-brown/58">
@@ -381,8 +281,6 @@ export default async function AdminSettingsPage() {
           Exécutez le seed pour initialiser les clés :{" "}
           <code className="font-mono text-xs">npx prisma db seed</code>
         </p>
-      ) : null}
-        </>
       ) : null}
     </div>
   );

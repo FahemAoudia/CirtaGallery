@@ -115,6 +115,9 @@ export const heroChromeCopy: Record<
     collectionBarTitle: string;
     collectionCardsNavAria: string;
     collectionCardJumpSuffix: string;
+    menuOpenAria: string;
+    menuCloseAria: string;
+    menuTitle: string;
   }
 > = {
   fr: {
@@ -141,6 +144,9 @@ export const heroChromeCopy: Record<
     collectionBarTitle: "Notre collection",
     collectionCardsNavAria: "Rayons en images — accéder au catalogue filtré",
     collectionCardJumpSuffix: "ouvrir le catalogue sur ce rayon",
+    menuOpenAria: "Ouvrir le menu",
+    menuCloseAria: "Fermer le menu",
+    menuTitle: "Navigation",
   },
   en: {
     brandSubtitle: "Antiques",
@@ -166,6 +172,9 @@ export const heroChromeCopy: Record<
     collectionBarTitle: "Our collection",
     collectionCardsNavAria: "Aisles in pictures — open filtered catalogue",
     collectionCardJumpSuffix: "open catalogue on this aisle",
+    menuOpenAria: "Open menu",
+    menuCloseAria: "Close menu",
+    menuTitle: "Navigation",
   },
   es: {
     brandSubtitle: "Antigüedades",
@@ -191,6 +200,9 @@ export const heroChromeCopy: Record<
     collectionBarTitle: "Nuestra colección",
     collectionCardsNavAria: "Secciones en imágenes — abrir catálogo filtrado",
     collectionCardJumpSuffix: "abrir el catálogo en esta sección",
+    menuOpenAria: "Abrir menú",
+    menuCloseAria: "Cerrar menú",
+    menuTitle: "Navegación",
   },
   zh: {
     brandSubtitle: "古董",
@@ -216,6 +228,9 @@ export const heroChromeCopy: Record<
     collectionBarTitle: "本馆收藏",
     collectionCardsNavAria: "分类图示 — 打开筛选后的目录",
     collectionCardJumpSuffix: "在目录中查看此展区",
+    menuOpenAria: "打开菜单",
+    menuCloseAria: "关闭菜单",
+    menuTitle: "导航",
   },
 };
 
