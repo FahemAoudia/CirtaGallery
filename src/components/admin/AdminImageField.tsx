@@ -13,7 +13,7 @@ export function AdminImageField({
   name = "image",
   initialUrl,
   label = "Image (fichier sur votre ordinateur)",
-  helpText = "JPEG, PNG, WebP ou GIF — max 12 Mo. L’image est copiée sur le serveur.",
+  helpText = "JPEG, PNG, WebP ou GIF — max 12 Mo. En production (Vercel), l’image est stockée sur Blob.",
 }: AdminImageFieldProps) {
   const [value, setValue] = useState(initialUrl);
   const [busy, setBusy] = useState(false);

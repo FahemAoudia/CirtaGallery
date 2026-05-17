@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build",
-    "vercel-build": "prisma generate && next build",
+    "vercel-build": "prisma generate && node scripts/vercel-db-push.mjs && next build",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "prisma generate",
@@ -13,6 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "admin:sync": "tsx scripts/ensure-admin.ts",
     "db:remote-setup": "prisma db push && npm run admin:sync",
+    "db:i18n-push": "node scripts/vercel-db-push.mjs",
     "postinstall": "prisma generate"
   },
   "prisma": {
@@ -21,6 +22,7 @@
   "dependencies": {
     "@paypal/react-paypal-js": "^9.2.0",
     "@prisma/client": "6.19.3",
+    "@vercel/blob": "^2.3.3",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.3",
     "next": "16.2.4",
