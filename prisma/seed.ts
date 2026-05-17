@@ -11,7 +11,9 @@ import { HOME_SECTION_DEFINITIONS } from "../src/lib/home-sections";
 const dbUrl =
   process.env.DATABASE_URL ??
   process.env.STORAGE_POSTGRES_PRISMA_URL ??
-  process.env.POSTGRES_PRISMA_URL;
+  process.env.POSTGRES_PRISMA_URL ??
+  process.env.STORAGE_DATABASE_URL ??
+  process.env.POSTGRES_URL;
 
 const prisma = new PrismaClient(
   dbUrl ? { datasources: { db: { url: dbUrl } } } : undefined,
