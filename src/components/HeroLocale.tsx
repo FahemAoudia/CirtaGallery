@@ -9,6 +9,7 @@ import {
 } from "@/lib/site-i18n";
 
 type HeroLocaleProps = {
+  /** Mise en page compacte sous lg (téléphone). */
   compact?: boolean;
 };
 
@@ -18,7 +19,7 @@ export function HeroLocale({ compact = false }: HeroLocaleProps) {
 
   return (
     <div>
-      <div className="mb-5 flex flex-wrap items-center gap-3 sm:mb-6">
+      <div className="mb-5 flex flex-wrap items-center gap-3 sm:mb-6 lg:mb-6">
         <label
           htmlFor="site-locale"
           className="text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-cirta-sand/40"
@@ -29,7 +30,7 @@ export function HeroLocale({ compact = false }: HeroLocaleProps) {
           id="site-locale"
           value={locale}
           onChange={(e) => setLocale(e.target.value as SiteLocale)}
-          className="touch-target max-w-[16rem] cursor-pointer border border-cirta-sand/25 bg-cirta-black/40 px-3 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-sand outline-none transition hover:border-cirta-sand/35 focus:border-cirta-gold/50 focus:ring-1 focus:ring-cirta-gold/30 sm:tracking-[0.16em]"
+          className="min-h-10 max-w-[16rem] cursor-pointer border border-cirta-sand/25 bg-cirta-black/40 px-3 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-sand outline-none transition hover:border-cirta-sand/35 focus:border-cirta-gold/50 focus:ring-1 focus:ring-cirta-gold/30 sm:tracking-[0.16em]"
         >
           {LOCALE_MENU.map((opt) => (
             <option key={opt.id} value={opt.id} className="bg-cirta-ink text-cirta-sand">
@@ -40,37 +41,37 @@ export function HeroLocale({ compact = false }: HeroLocaleProps) {
       </div>
 
       <div lang={locale === "zh" ? "zh-Hans" : locale}>
-        <p className="animate-fade-rise mb-4 text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-cirta-gold/95 delay-1 sm:mb-5">
+        <p className="animate-fade-rise mb-4 text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-cirta-gold/95 delay-1 sm:mb-5 lg:mb-5">
           {t.kicker}
         </p>
-        <div className="ornament-rule mb-5 max-w-[14rem] opacity-85 sm:mb-6" />
-        <h1 className="animate-fade-rise delay-1 font-serif text-[clamp(2rem,8vw,4.35rem)] font-semibold leading-[1.02] tracking-tight text-cirta-sand engraved-title">
+        <div className="ornament-rule mb-5 max-w-[14rem] opacity-85 sm:mb-6 lg:mb-6" />
+        <h1 className="animate-fade-rise delay-1 font-serif text-[clamp(2rem,8vw,4.35rem)] font-semibold leading-[1.02] tracking-tight text-cirta-sand engraved-title lg:text-[clamp(2.35rem,6.2vw,4.35rem)]">
           {t.titleA}
           <span className="mt-1 block text-cirta-gold">{t.titleB}</span>
         </h1>
         {locale === "zh" ? (
-          <p className="animate-fade-rise delay-2 mt-5 font-serif text-lg text-cirta-sand/75 sm:mt-6 md:text-2xl">
+          <p className="animate-fade-rise delay-2 mt-5 font-serif text-lg text-cirta-sand/75 sm:mt-6 lg:mt-6 lg:text-2xl">
             「{t.tag}」
           </p>
         ) : (
-          <p className="animate-fade-rise delay-2 mt-5 font-serif text-lg italic text-cirta-sand/75 sm:mt-6 md:text-2xl">
+          <p className="animate-fade-rise delay-2 mt-5 font-serif text-lg italic text-cirta-sand/75 sm:mt-6 lg:mt-6 lg:text-2xl">
             « {t.tag} »
           </p>
         )}
-        <p className="animate-fade-rise delay-2 mt-6 max-w-xl text-pretty text-base leading-[1.75] text-cirta-sand/72 sm:mt-8 md:text-lg">
+        <p className="animate-fade-rise delay-2 mt-6 max-w-xl text-pretty text-base leading-[1.75] text-cirta-sand/72 sm:mt-8 lg:mt-8 lg:text-lg">
           {t.lead}
         </p>
         <div
-          className={`animate-fade-rise delay-3 mt-8 sm:mt-10 ${
+          className={`animate-fade-rise delay-3 mt-8 sm:mt-10 lg:mt-10 ${
             compact
-              ? "flex flex-col gap-3"
+              ? "flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center lg:gap-4"
               : "flex flex-wrap items-center gap-4"
           }`}
         >
           <a
             href="#collection"
-            className={`btn-luxury-primary bg-cirta-gold text-cirta-brown hover:bg-transparent hover:text-cirta-gold ${
-              compact ? "w-full" : ""
+            className={`inline-flex items-center justify-center border border-cirta-gold bg-cirta-gold px-8 py-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-cirta-brown transition hover:bg-transparent hover:text-cirta-gold ${
+              compact ? "w-full lg:w-auto" : ""
             }`}
           >
             {t.ctaPrimary}
@@ -78,7 +79,7 @@ export function HeroLocale({ compact = false }: HeroLocaleProps) {
           <a
             href="#featured"
             className={`text-center text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-cirta-sand/80 underline-offset-4 transition hover:text-cirta-gold hover:underline ${
-              compact ? "py-2" : ""
+              compact ? "py-2 lg:py-0" : ""
             }`}
           >
             {t.ctaSecondary}

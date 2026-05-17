@@ -90,17 +90,17 @@ export function ProductCardClient({ item, compact = false }: ProductCardClientPr
           <span className="mx-1.5 text-cirta-gold/55">·</span>
           {display.origin}
         </p>
-        <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden sm:block" : ""}`}>
+        <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden lg:block" : ""}`}>
           {display.medium}
         </p>
         {display.depth?.trim() ? (
-          <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden sm:block" : ""}`}>
+          <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden lg:block" : ""}`}>
             <span className="font-semibold text-cirta-brown/55">{t.depthLabel}</span>{" "}
             {display.depth.trim()}
           </p>
         ) : null}
         {display.weight?.trim() ? (
-          <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden sm:block" : ""}`}>
+          <p className={`text-sm leading-relaxed text-cirta-brown/65 ${compact ? "hidden lg:block" : ""}`}>
             <span className="font-semibold text-cirta-brown/55">{t.weightLabel}</span>{" "}
             {display.weight.trim()}
           </p>

@@ -55,9 +55,9 @@ export function Hero({
       />
       <div className="pointer-events-none absolute inset-0 corner-ornament" aria-hidden />
 
-      <div className="site-container relative z-20 w-full pt-4 md:pt-8">
+      <div className="relative z-20 mx-auto w-full max-w-7xl px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
         <div className="flex flex-col gap-4 md:gap-5">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-3 lg:hidden">
             <Link
               href="/"
               className="group flex shrink-0 items-center gap-3 sm:gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-cirta-gold/60"
@@ -68,20 +68,37 @@ export function Hero({
                 width={1024}
                 height={1024}
                 priority
-                className="h-[3.75rem] w-auto object-contain drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] transition-[filter] duration-300 group-hover:brightness-110 sm:h-[4.25rem] md:h-[5.875rem] lg:h-[6.5rem] xl:h-[7rem]"
+                className="h-[3.75rem] w-auto object-contain drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] transition-[filter] duration-300 group-hover:brightness-110 sm:h-[4.25rem]"
               />
               <span className="font-serif text-[clamp(1.05rem,2.4vw,1.55rem)] leading-none tracking-[0.08em] text-cirta-gold/95 [text-shadow:0_1px_18px_rgba(200,169,106,0.22)] transition-colors duration-300 group-hover:text-cirta-sand">
                 {h.brandSubtitle}
               </span>
             </Link>
             <HeroMobileNav nav={nav} />
-            <div className="hidden xl:block">
-              <HeroActions />
-            </div>
           </div>
 
-          <div className="xl:hidden">
+          <div className="lg:hidden">
             <HeroActions compact />
+          </div>
+
+          <div className="hidden flex-wrap items-start justify-between gap-3 lg:flex lg:items-center">
+            <Link
+              href="/"
+              className="group flex shrink-0 items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-cirta-gold/60"
+            >
+              <Image
+                src="/cirta-gallery-logo.png"
+                alt="Cirta Gallery"
+                width={1024}
+                height={1024}
+                priority
+                className="h-[5.875rem] w-auto object-contain drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] transition-[filter] duration-300 group-hover:brightness-110 xl:h-[7rem]"
+              />
+              <span className="font-serif text-[clamp(1.05rem,2.4vw,1.55rem)] leading-none tracking-[0.08em] text-cirta-gold/95 [text-shadow:0_1px_18px_rgba(200,169,106,0.22)] transition-colors duration-300 group-hover:text-cirta-sand">
+                {h.brandSubtitle}
+              </span>
+            </Link>
+            <HeroActions />
           </div>
 
           <form
@@ -128,7 +145,7 @@ export function Hero({
 
           <nav
             aria-label={h.navMainAria}
-            className="hidden flex-wrap items-center justify-center gap-5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cirta-sand/68 sm:gap-6 sm:text-[0.66rem] md:justify-center xl:flex xl:gap-7"
+            className="hidden flex-wrap items-center justify-center gap-5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cirta-sand/68 sm:gap-6 sm:text-[0.66rem] md:justify-center lg:flex lg:gap-7"
           >
             {nav.map((item) => (
               <Link
@@ -141,13 +158,27 @@ export function Hero({
             ))}
           </nav>
 
+          <nav
+            aria-label={h.navMobileAria}
+            className="flex gap-3 overflow-x-auto pb-1 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-cirta-sand/62 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-5 sm:text-[0.6rem] lg:hidden [&::-webkit-scrollbar]:hidden"
+          >
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="shrink-0 border-b border-transparent pb-1 text-cirta-sand/80 transition hover:border-cirta-gold/45 hover:text-cirta-gold"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
 
-      <div className="site-container relative z-10 grid flex-1 items-center gap-10 pb-10 pt-6 sm:gap-12 md:grid-cols-12 md:gap-10 md:pb-20 md:pt-12">
+      <div className="relative z-10 mx-auto grid max-w-7xl flex-1 items-center gap-12 px-4 pb-10 pt-8 sm:px-6 md:grid-cols-12 md:gap-10 md:px-10 md:pb-20 md:pt-12">
         <div className="relative md:col-span-5">
           <HeroLocale compact />
-          <dl className="hero-mobile-meta animate-fade-rise delay-4 mt-10 hidden max-w-md gap-4 border-t border-white/10 pt-8 text-sm text-cirta-sand/58 sm:mt-14 sm:grid md:grid">
+          <dl className="animate-fade-rise delay-4 mt-14 hidden max-w-md gap-4 border-t border-white/10 pt-8 text-sm text-cirta-sand/58 lg:grid">
             <div className="flex justify-between gap-6">
               <dt className="font-medium uppercase tracking-[0.15em] text-cirta-sand/38">
                 {h.expertise}
@@ -179,7 +210,7 @@ export function Hero({
                   width={1100}
                   height={1400}
                   priority
-                  className="aspect-[4/5] max-h-[min(52svh,480px)] w-full object-cover md:max-h-[min(62vh,600px)] md:aspect-auto md:h-[min(62vh,600px)]"
+                  className="aspect-[4/5] max-h-[min(52svh,480px)] w-full object-cover lg:aspect-auto lg:h-[min(62vh,600px)] lg:max-h-none"
                   sizes="(min-width: 768px) 44vw, 100vw"
                 />
               </div>
@@ -214,7 +245,7 @@ export function Hero({
                 </p>
               </div>
             </div>
-            <p className="mt-8 hidden max-w-md text-[0.72rem] leading-relaxed text-cirta-sand/45 md:mt-12 md:block">
+            <p className="mt-8 hidden max-w-md text-[0.72rem] leading-relaxed text-cirta-sand/45 lg:mt-12 lg:block">
               {h.heroAsideParagraph}
             </p>
           </div>
@@ -222,13 +253,13 @@ export function Hero({
       </div>
 
       <div className="relative z-20 border-y border-cirta-gold/35 bg-cirta-sand/95 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.35)]">
-        <div className="site-container py-5 md:py-6">
-          <p className="text-center section-kicker text-cirta-brown">
+        <div className="mx-auto max-w-7xl px-6 py-5 md:px-10 md:py-6">
+          <p className="text-center text-[0.68rem] font-bold uppercase tracking-[0.38em] text-cirta-brown">
             {h.collectionBarTitle}
           </p>
           <div className="ornament-rule mx-auto my-4 max-w-md opacity-70" />
           <nav aria-label={h.collectionCardsNavAria} className="mt-5 md:mt-6">
-            <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 sm:gap-y-9 lg:flex lg:flex-nowrap lg:justify-between lg:gap-y-0">
+            <ul className="mx-auto flex max-w-6xl flex-wrap justify-center gap-x-0 gap-y-10 md:gap-y-9 max-lg:grid max-lg:grid-cols-2 max-lg:gap-x-3 max-lg:gap-y-8 sm:max-lg:grid-cols-3 lg:flex-nowrap lg:justify-between lg:gap-y-0">
               {collectionRibbonItems.map((r, index) => {
                 const label = displayRibbonLabel(locale, r.id, r.label);
                 const href = `${ribbonOnly(r.id)}#collection`;

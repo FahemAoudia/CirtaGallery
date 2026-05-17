@@ -16,6 +16,7 @@ import { useCart } from "@/context/CartContext";
 import { useLocale } from "@/context/LocaleContext";
 import { localizeCatalogItem } from "@/lib/catalog-locale";
 import { formatCad } from "@/lib/format-cad";
+import { productDescriptionPanelClass } from "@/lib/product-description-panel";
 import { productCardCopy, productInspectCopy } from "@/lib/public-ui-i18n";
 
 type InspectCtx = {
@@ -306,11 +307,11 @@ function ProductInspectDialogPanel() {
             </div>
 
             {display.histoire?.trim() ? (
-              <div className="rounded-sm border border-cirta-brown/[0.07] bg-gradient-to-br from-cirta-sand/95 to-cirta-sand/60 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
+              <div className={productDescriptionPanelClass}>
                 <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-cirta-gold-dim">
                   {t.descriptionLabel}
                 </p>
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-cirta-brown/88">
+                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-cirta-brown/78">
                   {display.histoire.trim()}
                 </p>
               </div>
