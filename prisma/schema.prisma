@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  ADMIN
+  MODERATOR
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(ADMIN)
+  createdAt    DateTime  @default(now())
+}
+
+model Subscriber {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  phone         String?
+  source        String   @default("newsletter")
+  paypalOrderId String?
+  createdAt     DateTime @default(now())
+}
+
+model Product {
+  id         String  @id @default(cuid())
+  sku        String  @unique
+  title      String
+  /** Court récit affiché sur la fiche (aperçu + « voir plus »). */
+  histoire   String  @default("")
+  period     String
+  origin     String
+  medium     String
+  /** Profondeur (texte libre, ex. « 12 cm ») — optionnel. */
+  depth      String  @default("")
+  /** Poids (texte libre, ex. « 2,3 kg ») — optionnel. */
+  weight     String  @default("")
+  image      String
+  width      Int
+  height     Int
+  ribbonKey  String
+  facetsJson String
+  /** Prix affiché et encaissé en dollars canadiens (PayPal) */
+  priceCad   Float   @default(0)
+  sortOrder  Int     @default(0)
+  published  Boolean @default(true)
+}
+
+model Facet {
+  id        String @id
+  label     String
+  sortOrder Int    @default(0)
+}
+
+model Ribbon {
+  id        String @id
+  label     String
+  sortOrder Int    @default(0)
+  /** Image bandeau « Notre collection » (accueil) — vitrine uniquement, optionnel. */
+  teaserImage String @default("")
+}
+
+model FeaturedPiece {
+  id          String @id @default(cuid())
+  catalogRef  String
+  title       String
+  description String
+  meta        String
+  image       String
+  width       Int
+  height      Int
+  sortOrder   Int    @default(0)
+}
+
+model SiteSetting {
+  key   String @id
+  value String
+}
+
+/** FAQ type « chat » (questions / réponses) pour le widget public. */
+model FaqChatEntry {
+  id        String  @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int     @default(0)
+  enabled   Boolean @default(true)
+}
+
+/** Blocs de la page d’accueil (ordre, visibilité, ajout / suppression). */
+model HomeSection {
+  id         String  @id @default(cuid())
+  sectionKey String @unique
+  label      String
+  sortOrder  Int     @default(0)
+  enabled    Boolean @default(true)
+}
