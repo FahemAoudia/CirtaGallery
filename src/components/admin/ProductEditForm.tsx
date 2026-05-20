@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { saveProduct } from "@/app/admin/_actions";
-import { AdminImageField } from "@/components/admin/AdminImageField";
+import { ProductImagesEditor } from "@/components/admin/ProductImagesEditor";
 import type { Product } from "@prisma/client";
 
 type RibbonOpt = { id: string; label: string };
@@ -167,11 +167,15 @@ export function ProductEditForm({
           0 = « Sur demande » (pas d’achat en ligne).
         </p>
       </div>
-      <AdminImageField initialUrl={product?.image ?? ""} />
+      <ProductImagesEditor
+        product={product}
+        defaultWidth={product?.width ?? 880}
+        defaultHeight={product?.height ?? 1100}
+      />
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1">
           <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50">
-            Largeur
+            Largeur (image principale)
           </label>
           <input
             name="width"
@@ -182,7 +186,7 @@ export function ProductEditForm({
         </div>
         <div className="space-y-1">
           <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-cirta-brown/50">
-            Hauteur
+            Hauteur (image principale)
           </label>
           <input
             name="height"

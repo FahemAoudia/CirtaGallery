@@ -16,6 +16,11 @@ import { CONTACT_CMS_FIELD_META } from "@/lib/contact-settings";
 import { serializeEntityI18n } from "@/lib/content-i18n";
 import { setAdminFlashMessage } from "@/lib/admin-flash";
 import { prisma } from "@/lib/prisma";
+import {
+  parseProductImagesFromForm,
+  primaryCatalogImage,
+  serializeProductImages,
+} from "@/lib/product-images";
 
 const ADMIN_PASSWORD_MIN_LENGTH = 10;
 
@@ -90,12 +95,17 @@ export async function saveProduct(formData: FormData) {
   const weight = String(formData.get("weight") ?? "").trim();
   const hauteur = String(formData.get("hauteur") ?? "").trim();
   const histoire = String(formData.get("histoire") ?? "").trim();
-  const image = String(formData.get("image") ?? "").trim();
-  if (!image) {
-    throw new Error("Image obligatoire (importez un fichier depuis votre ordinateur).");
-  }
   const width = Number(formData.get("width")) || 880;
   const height = Number(formData.get("height")) || 1100;
+  const imageEntries = parseProductImagesFromForm(formData, width, height);
+  if (imageEntries.length === 0) {
+    throw new Error("Ajoutez au moins une image (face avant recommandée).");
+  }
+  const imagesJson = serializeProductImages(imageEntries);
+  const primary = primaryCatalogImage(imageEntries);
+  const image = primary.image;
+  const imgWidth = primary.width;
+  const imgHeight = primary.height;
   const ribbonKey = String(formData.get("ribbonKey") ?? "").trim();
   const facetFromBoxes = formData
     .getAll("facetIds")
@@ -135,8 +145,9 @@ export async function saveProduct(formData: FormData) {
         hauteur,
         histoire,
         image,
-        width,
-        height,
+        width: imgWidth,
+        height: imgHeight,
+        imagesJson,
         ribbonKey,
         facetsJson,
         sortOrder,
@@ -157,8 +168,9 @@ export async function saveProduct(formData: FormData) {
         hauteur,
         histoire,
         image,
-        width,
-        height,
+        width: imgWidth,
+        height: imgHeight,
+        imagesJson,
         ribbonKey,
         facetsJson,
         sortOrder,

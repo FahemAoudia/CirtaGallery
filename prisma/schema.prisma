@@ -48,6 +48,8 @@ model Product {
   image      String
   width      Int
   height     Int
+  /** Galerie jusqu’à 7 vues (JSON : slot, url, dimensions, légende FR). */
+  imagesJson String  @default("[]")
   ribbonKey  String
   facetsJson String
   /** Prix affiché et encaissé en dollars canadiens (PayPal) */

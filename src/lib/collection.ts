@@ -1,5 +1,6 @@
 import { ANTIQUE_IMG } from "@/lib/antique-images";
 import type { EntityI18n } from "@/lib/content-i18n";
+import type { ProductImageEntry } from "@/lib/product-images";
 
 export type CatalogItemI18nFields = {
   title?: string;
@@ -29,6 +30,8 @@ export type CatalogItem = {
   image: string;
   width: number;
   height: number;
+  /** Galerie multi-vues (fiche zoom) ; `image` = face avant. */
+  images?: ProductImageEntry[];
   ribbon: string;
   facets: string[];
   /** Prix catalogue en CAD (dollar canadien) */

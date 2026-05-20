@@ -7,6 +7,7 @@ import {
   sidebarFacets,
 } from "../src/lib/collection";
 import { HOME_SECTION_DEFINITIONS } from "../src/lib/home-sections";
+import { serializeProductImages } from "../src/lib/product-images";
 
 const dbUrl =
   process.env.DATABASE_URL ??
@@ -79,6 +80,15 @@ async function main() {
           image: item.image,
           width: item.width,
           height: item.height,
+          imagesJson: serializeProductImages([
+            {
+              slot: "front",
+              url: item.image,
+              width: item.width,
+              height: item.height,
+              caption: "",
+            },
+          ]),
           ribbonKey: item.ribbon,
           facetsJson: JSON.stringify(item.facets),
           priceCad: item.priceCad,

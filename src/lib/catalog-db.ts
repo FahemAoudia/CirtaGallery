@@ -12,6 +12,11 @@ import {
 import { parseEntityI18n, parseLabelI18n, type SiteTextI18n } from "@/lib/content-i18n";
 import { defaultHomeSections, type HomeSectionRow } from "@/lib/home-sections";
 import { prisma } from "@/lib/prisma";
+import {
+  galleryFromJson,
+  parseProductImages,
+  primaryCatalogImage,
+} from "@/lib/product-images";
 
 export type RibbonRow = {
   id: string;
@@ -34,6 +39,7 @@ function mapProduct(p: {
   image: string;
   width: number;
   height: number;
+  imagesJson: string;
   ribbonKey: string;
   facetsJson: string;
   priceCad: number;
@@ -54,6 +60,15 @@ function mapProduct(p: {
     p.histoire?.trim() ||
     staticItem?.histoire?.trim() ||
     defaultHistoireForSku(p.sku);
+  const legacy = { image: p.image, width: p.width, height: p.height };
+  const images =
+    parseProductImages(p.imagesJson, legacy).length > 0
+      ? galleryFromJson(p.imagesJson, legacy)
+      : staticItem?.images?.length
+        ? staticItem.images
+        : galleryFromJson("[]", legacy);
+  const primary = primaryCatalogImage(images, legacy);
+
   return {
     id: p.sku,
     title: p.title,
@@ -64,9 +79,10 @@ function mapProduct(p: {
     depth: p.depth?.trim() || staticItem?.depth?.trim() || undefined,
     weight: p.weight?.trim() || staticItem?.weight?.trim() || undefined,
     hauteur: p.hauteur?.trim() || staticItem?.hauteur?.trim() || undefined,
-    image: p.image,
-    width: p.width,
-    height: p.height,
+    image: primary.image,
+    width: primary.width,
+    height: primary.height,
+    images: images.length > 0 ? images : undefined,
     ribbon: p.ribbonKey,
     facets,
     priceCad: p.priceCad,

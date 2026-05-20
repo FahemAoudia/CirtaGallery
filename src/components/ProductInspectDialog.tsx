@@ -18,6 +18,7 @@ import { localizeCatalogItem } from "@/lib/catalog-locale";
 import { formatCad } from "@/lib/format-cad";
 import { ProductDimensionsGrid } from "@/components/ProductDimensionsGrid";
 import { productDescriptionPanelClass } from "@/lib/product-description-panel";
+import { displayCaption, type ProductImageEntry } from "@/lib/product-images";
 import { productCardCopy, productInspectCopy } from "@/lib/public-ui-i18n";
 
 type InspectCtx = {
@@ -58,6 +59,7 @@ function ProductInspectDialogPanel() {
   const [scale, setScale] = useState(1);
   const [off, setOff] = useState({ x: 0, y: 0 });
   const [qty, setQty] = useState(1);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const scaleRef = useRef(scale);
   scaleRef.current = scale;
@@ -68,14 +70,45 @@ function ProductInspectDialogPanel() {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const panCleanupRef = useRef<(() => void) | null>(null);
 
+  const gallery = useMemo((): ProductImageEntry[] => {
+    if (!display) return [];
+    if (display.images?.length) return display.images;
+    if (display.image?.trim()) {
+      return [
+        {
+          slot: "front",
+          url: display.image,
+          width: display.width,
+          height: display.height,
+          caption: "",
+        },
+      ];
+    }
+    return [];
+  }, [display]);
+
+  const activeImage = gallery[imageIndex] ?? gallery[0];
+
+  useEffect(() => {
+    if (imageIndex >= gallery.length) setImageIndex(0);
+  }, [gallery.length, imageIndex]);
+
   useEffect(() => {
     if (!item) return;
     setScale(1);
     setOff({ x: 0, y: 0 });
     setQty(1);
+    setImageIndex(0);
     panCleanupRef.current?.();
     panCleanupRef.current = null;
   }, [item?.id]);
+
+  useEffect(() => {
+    setScale(1);
+    setOff({ x: 0, y: 0 });
+    panCleanupRef.current?.();
+    panCleanupRef.current = null;
+  }, [imageIndex]);
 
   useEffect(() => {
     if (!item) return;
@@ -86,7 +119,18 @@ function ProductInspectDialogPanel() {
   useEffect(() => {
     if (!item) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") {
+        close();
+        return;
+      }
+      if (gallery.length < 2 || scaleRef.current > 1) return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setImageIndex((i) => (i <= 0 ? gallery.length - 1 : i - 1));
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setImageIndex((i) => (i >= gallery.length - 1 ? 0 : i + 1));
+      }
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -96,7 +140,7 @@ function ProductInspectDialogPanel() {
       panCleanupRef.current?.();
       panCleanupRef.current = null;
     };
-  }, [item, close]);
+  }, [item, close, gallery.length]);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -259,28 +303,73 @@ function ProductInspectDialogPanel() {
               onPointerDown={handlePointerDown}
               onDoubleClick={resetView}
             >
-              <div
-                className="flex h-full w-full items-center justify-center will-change-transform"
-                style={{
-                  transform: `translate(${off.x}px, ${off.y}px) scale(${scale})`,
-                }}
-              >
-                <Image
-                  src={display.image}
-                  alt={`${display.title} — ${display.period}`}
-                  width={display.width}
-                  height={display.height}
-                  draggable={false}
-                  className="pointer-events-none max-h-full max-w-full object-contain"
-                  sizes="(min-width: 1024px) 48vw, 96vw"
-                  priority
-                />
-              </div>
+              {gallery.length > 1 && scale <= 1 ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setImageIndex((idx) => (idx <= 0 ? gallery.length - 1 : idx - 1));
+                    }}
+                    className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-cirta-gold/45 bg-cirta-sand/92 text-cirta-brown shadow-sm transition hover:border-cirta-gold/70 hover:bg-cirta-gold/10 sm:left-3 sm:h-11 sm:w-11"
+                    aria-label={i.prevImageAria}
+                  >
+                    <span className="text-lg leading-none" aria-hidden>
+                      ‹
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setImageIndex((idx) => (idx >= gallery.length - 1 ? 0 : idx + 1));
+                    }}
+                    className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-cirta-gold/45 bg-cirta-sand/92 text-cirta-brown shadow-sm transition hover:border-cirta-gold/70 hover:bg-cirta-gold/10 sm:right-3 sm:h-11 sm:w-11"
+                    aria-label={i.nextImageAria}
+                  >
+                    <span className="text-lg leading-none" aria-hidden>
+                      ›
+                    </span>
+                  </button>
+                </>
+              ) : null}
+              {activeImage ? (
+                <div
+                  className="flex h-full w-full items-center justify-center will-change-transform"
+                  style={{
+                    transform: `translate(${off.x}px, ${off.y}px) scale(${scale})`,
+                  }}
+                >
+                  <Image
+                    key={activeImage.url}
+                    src={activeImage.url}
+                    alt={`${display.title} — ${displayCaption(activeImage)}`}
+                    width={activeImage.width}
+                    height={activeImage.height}
+                    draggable={false}
+                    className="pointer-events-none max-h-full max-w-full object-contain"
+                    sizes="(min-width: 1024px) 48vw, 96vw"
+                    priority
+                  />
+                </div>
+              ) : null}
               <div
                 className="pointer-events-none absolute inset-0 bg-gradient-to-t from-cirta-brown/15 via-transparent to-transparent"
                 aria-hidden
               />
             </div>
+            {activeImage ? (
+              <figcaption className="border-t border-cirta-brown/10 bg-cirta-sand/95 px-4 py-2.5 text-center sm:px-6">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-cirta-gold-dim sm:text-[0.72rem]">
+                  {displayCaption(activeImage)}
+                </p>
+                {gallery.length > 1 ? (
+                  <p className="mt-0.5 font-mono text-[0.58rem] tabular-nums text-cirta-brown/45">
+                    {imageIndex + 1} / {gallery.length}
+                  </p>
+                ) : null}
+              </figcaption>
+            ) : null}
           </figure>
 
           <div className="relative flex flex-col gap-5 px-5 py-6 sm:px-7 sm:py-8">

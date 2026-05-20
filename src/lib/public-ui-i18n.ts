@@ -513,6 +513,8 @@ export const productInspectCopy: Record<
     zoomHint: string;
     close: string;
     openDetailsAria: string;
+    prevImageAria: string;
+    nextImageAria: string;
   }
 > = {
   fr: {
@@ -521,6 +523,8 @@ export const productInspectCopy: Record<
       "Molette : zoom · double-clic : réinitialiser · glisser pour déplacer lorsque zoomé",
     close: "Fermer",
     openDetailsAria: "Ouvrir la fiche détaillée et agrandir la photo",
+    prevImageAria: "Vue précédente",
+    nextImageAria: "Vue suivante",
   },
   en: {
     sheetKicker: "Piece sheet",
@@ -528,6 +532,8 @@ export const productInspectCopy: Record<
       "Scroll wheel: zoom · double-click: reset · drag to pan when zoomed",
     close: "Close",
     openDetailsAria: "Open detailed sheet and enlarge the photo",
+    prevImageAria: "Previous view",
+    nextImageAria: "Next view",
   },
   es: {
     sheetKicker: "Ficha de la pieza",
@@ -535,12 +541,16 @@ export const productInspectCopy: Record<
       "Rueda del ratón: zoom · doble clic: restablecer · arrastrar para mover con zoom",
     close: "Cerrar",
     openDetailsAria: "Abrir ficha detallada y ampliar la foto",
+    prevImageAria: "Vista anterior",
+    nextImageAria: "Vista siguiente",
   },
   zh: {
     sheetKicker: "作品档案",
     zoomHint: "滚轮缩放 · 双击还原 · 放大后可拖拽平移",
     close: "关闭",
     openDetailsAria: "打开详情并放大图片",
+    prevImageAria: "上一视图",
+    nextImageAria: "下一视图",
   },
 };
 
