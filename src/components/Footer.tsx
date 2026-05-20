@@ -11,12 +11,13 @@ import {
 } from "@/components/SocialAndContactLinks";
 import { useLocale } from "@/context/LocaleContext";
 import { footerCopyrightLine, footerCopy } from "@/lib/public-ui-i18n";
-import { resolveSiteContact } from "@/lib/site-contact";
+import { hasPublicContactCoordinates, resolveSiteContact } from "@/lib/site-contact";
 
 export function Footer({ settings = {} }: { settings?: Record<string, string> }) {
   const { locale } = useLocale();
   const f = footerCopy[locale];
   const contactInfo = useMemo(() => resolveSiteContact(settings), [settings]);
+  const showVisits = hasPublicContactCoordinates(contactInfo);
 
   const footerNav = [
     { href: "#collection", label: f.navCollection },
@@ -91,13 +92,15 @@ export function Footer({ settings = {} }: { settings?: Record<string, string> })
           </div>
 
           <div className="flex min-w-0 flex-col gap-10 lg:col-span-4 lg:border-l lg:border-cirta-brown/10 lg:pl-10 xl:pl-12">
-            <div className="text-sm text-cirta-brown/65">
-              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-cirta-brown/42">
-                {f.visitsTitle}
-              </p>
-              <SiteAddressLines className="mt-3 leading-relaxed" contact={contactInfo} />
-              <MailPhoneLinksRow locale={locale} contact={contactInfo} />
-            </div>
+            {showVisits ? (
+              <div className="text-sm text-cirta-brown/65">
+                <p className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-cirta-brown/42">
+                  {f.visitsTitle}
+                </p>
+                <SiteAddressLines className="mt-3 leading-relaxed" contact={contactInfo} />
+                <MailPhoneLinksRow locale={locale} contact={contactInfo} />
+              </div>
+            ) : null}
 
             <div className="border-t border-cirta-brown/10 pt-8">
               <p className="text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-cirta-brown/42">

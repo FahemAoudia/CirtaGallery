@@ -231,20 +231,35 @@ export function MailPhoneLinksRow({
     "group inline-flex items-center gap-2.5 text-sm text-cirta-sand/72 underline-offset-4 transition hover:text-cirta-gold";
   const base = linkClassName ?? (tone === "ink" ? defaultInk : defaultSand);
 
+  if (!c.email && !c.phoneDisplay) return null;
+
   return (
     <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
-      <a href={mailtoHref(c)} className={base} title={a.mail}>
-        <span className={ic}>
-          <IconMail />
-        </span>
-        <span>{c.email}</span>
-      </a>
-      <a href={telHref(c)} className={base} title={a.phone}>
-        <span className={ic}>
-          <IconPhone />
-        </span>
-        <span>{c.phoneDisplay}</span>
-      </a>
+      {c.email ? (
+        <a href={mailtoHref(c)} className={base} title={a.mail}>
+          <span className={ic}>
+            <IconMail />
+          </span>
+          <span>{c.email}</span>
+        </a>
+      ) : null}
+      {c.phoneDisplay ? (
+        c.phoneE164Digits ? (
+          <a href={telHref(c)} className={base} title={a.phone}>
+            <span className={ic}>
+              <IconPhone />
+            </span>
+            <span>{c.phoneDisplay}</span>
+          </a>
+        ) : (
+          <span className={`${base} cursor-default no-underline hover:no-underline`}>
+            <span className={ic}>
+              <IconPhone />
+            </span>
+            <span>{c.phoneDisplay}</span>
+          </span>
+        )
+      ) : null}
     </div>
   );
 }
@@ -257,6 +272,7 @@ export function SiteAddressLines({
   contact?: ResolvedSiteContact;
 }) {
   const lines = (contact ?? resolveSiteContact({})).addressLines;
+  if (lines.length === 0) return null;
   return (
     <p className={className}>
       {lines.map((line, i) => (

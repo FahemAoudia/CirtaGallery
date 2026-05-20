@@ -20,6 +20,18 @@ export function resolveSiteText(
   return mirrorFallback;
 }
 
+/** Texte CMS sans repli statique (admin vide = rien sur la vitrine). */
+export function resolveSiteTextStrict(
+  settings: Record<string, string>,
+  key: string,
+  locale: SiteLocale,
+): string {
+  if (locale === "fr") {
+    return settings[key]?.trim() ?? "";
+  }
+  return parseSiteTextI18n(settings[siteI18nStorageKey(key)])?.[locale]?.trim() ?? "";
+}
+
 export function resolveLabel(
   locale: SiteLocale,
   labelFr: string,

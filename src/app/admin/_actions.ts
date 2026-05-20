@@ -12,7 +12,11 @@ import {
   translateFrenchFields,
   translationSucceeded,
 } from "@/lib/auto-translate";
-import { CONTACT_INFO_KEYS } from "@/lib/contact-settings";
+import {
+  CONTACT_INFO_KEYS,
+  LEGACY_CONTACT_SETTING_PREFIXES,
+} from "@/lib/contact-settings";
+import { siteI18nStorageKey } from "@/lib/content-i18n";
 import { serializeEntityI18n } from "@/lib/content-i18n";
 import { setAdminFlashMessage } from "@/lib/admin-flash";
 import { prisma } from "@/lib/prisma";
@@ -350,6 +354,16 @@ export async function saveSiteSetting(formData: FormData) {
   revalidatePath("/admin/settings");
 }
 
+async function purgeLegacyContactSettings() {
+  await prisma.siteSetting.deleteMany({
+    where: {
+      OR: LEGACY_CONTACT_SETTING_PREFIXES.map((prefix) => ({
+        key: { startsWith: prefix },
+      })),
+    },
+  });
+}
+
 export async function saveContactInfo(formData: FormData) {
   await requirePrimaryAdmin();
   const batch: { key: string; value: string }[] = [];
@@ -358,6 +372,11 @@ export async function saveContactInfo(formData: FormData) {
     batch.push({ key, value });
     if (!value) {
       await prisma.siteSetting.deleteMany({ where: { key } });
+      if (key === "contact_intro" || key === "contact_heading") {
+        await prisma.siteSetting.deleteMany({
+          where: { key: siteI18nStorageKey(key) },
+        });
+      }
     } else {
       await prisma.siteSetting.upsert({
         where: { key },
@@ -366,10 +385,28 @@ export async function saveContactInfo(formData: FormData) {
       });
     }
   }
+  await purgeLegacyContactSettings();
   const translated = await persistSiteSettingsI18nBatch(
     batch.filter((b) => b.key === "contact_intro" || b.key === "contact_heading"),
   );
   await flashAfterSave("Coordonnées et textes contact enregistrés.", translated);
+  revalidatePath("/");
+  revalidatePath("/admin/settings");
+}
+
+/** Supprime les clés contact obsolètes et les __i18n__ orphelins (sans texte FR). */
+export async function purgeOrphanContactSettings() {
+  await requirePrimaryAdmin();
+  await purgeLegacyContactSettings();
+  for (const base of ["contact_intro", "contact_heading"] as const) {
+    const fr = await prisma.siteSetting.findUnique({ where: { key: base } });
+    if (!fr?.value?.trim()) {
+      await prisma.siteSetting.deleteMany({
+        where: { key: siteI18nStorageKey(base) },
+      });
+    }
+  }
+  await setAdminFlashMessage("Anciennes clés contact supprimées de la base.");
   revalidatePath("/");
   revalidatePath("/admin/settings");
 }

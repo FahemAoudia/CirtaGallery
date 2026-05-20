@@ -27,22 +27,26 @@ export type ResolvedSiteContact = {
   addressLines: string[];
 };
 
-/** Coordonnées vitrine : admin (SiteSetting) puis constantes. */
+/** Coordonnées vitrine : uniquement ce qui est enregistré dans l’admin (vide = masqué). */
 export function resolveSiteContact(
   settings: Record<string, string> = {},
 ): ResolvedSiteContact {
-  const email = settings.contact_email?.trim() || SITE_CONTACT.email;
-  const phoneDisplay =
-    settings.contact_phone_display?.trim() || SITE_CONTACT.phoneDisplay;
+  const email = settings.contact_email?.trim() ?? "";
+  const phoneDisplay = settings.contact_phone_display?.trim() ?? "";
   const phoneE164Digits =
-    settings.contact_phone_e164?.trim().replace(/\D/g, "") ||
-    SITE_CONTACT.phoneE164Digits;
-  const addressRaw = settings.contact_address?.trim();
+    settings.contact_phone_e164?.trim().replace(/\D/g, "") ?? "";
+  const addressRaw = settings.contact_address?.trim() ?? "";
   const addressLines = addressRaw
     ? addressRaw.split(/\r?\n/).map((l) => l.trim()).filter(Boolean)
-    : [...SITE_CONTACT.addressLines];
+    : [];
 
   return { email, phoneDisplay, phoneE164Digits, addressLines };
+}
+
+export function hasPublicContactCoordinates(c: ResolvedSiteContact): boolean {
+  return Boolean(
+    c.email || c.phoneDisplay || c.phoneE164Digits || c.addressLines.length > 0,
+  );
 }
 
 export function mailtoHref(contact?: ResolvedSiteContact) {

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { saveContactInfo, saveSiteSetting } from "@/app/admin/_actions";
+import { purgeOrphanContactSettings, saveContactInfo, saveSiteSetting } from "@/app/admin/_actions";
 import { DEFAULT_CONTACT_EMAIL_SUBJECT, SITE_CONTACT } from "@/lib/site-contact";
 import { getAdminCookieName, verifyAdminJwt, type AdminRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -187,7 +187,11 @@ export default async function AdminSettingsPage() {
         <h2 className="font-serif text-xl font-medium text-cirta-brown">Contact</h2>
         <p className="mt-2 text-sm text-cirta-brown/58">
           Textes de la colonne gauche, coordonnées affichées (courriel, téléphone, adresse) et objet des
-          e-mails reçus via le formulaire. Champs vides = valeurs par défaut du site.
+          e-mails reçus via le formulaire.{" "}
+          <strong className="font-medium text-cirta-brown/75">
+            Champs vides = rien sur la vitrine
+          </strong>{" "}
+          (les exemples grisés dans les champs sont indicatifs uniquement).
         </p>
 
         <form action={saveContactInfo} className="mt-8 space-y-6">
@@ -198,10 +202,8 @@ export default async function AdminSettingsPage() {
             <textarea
               name="contact_heading"
               rows={2}
-              defaultValue={
-                byKey.contact_heading ??
-                "Réserver une pièce, un passage au salon ou une expertise"
-              }
+              defaultValue={byKey.contact_heading ?? ""}
+              placeholder="Réserver une pièce, un passage au salon ou une expertise"
               className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm leading-relaxed"
             />
           </div>
@@ -212,10 +214,8 @@ export default async function AdminSettingsPage() {
             <textarea
               name="contact_intro"
               rows={3}
-              defaultValue={
-                byKey.contact_intro ??
-                "Une réponse sous trois jours ouvrés. Les rendez-vous sur place se réservent après échange d’emails."
-              }
+              defaultValue={byKey.contact_intro ?? ""}
+              placeholder="Une réponse sous trois jours ouvrés. Les rendez-vous sur place se réservent après échange d’emails."
               className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm leading-relaxed"
             />
           </div>
@@ -227,7 +227,8 @@ export default async function AdminSettingsPage() {
               <input
                 name="contact_email"
                 type="email"
-                defaultValue={byKey.contact_email ?? SITE_CONTACT.email}
+                defaultValue={byKey.contact_email ?? ""}
+                placeholder={SITE_CONTACT.email}
                 className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
               />
             </div>
@@ -237,7 +238,8 @@ export default async function AdminSettingsPage() {
               </label>
               <input
                 name="contact_phone_display"
-                defaultValue={byKey.contact_phone_display ?? SITE_CONTACT.phoneDisplay}
+                defaultValue={byKey.contact_phone_display ?? ""}
+                placeholder={SITE_CONTACT.phoneDisplay}
                 className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
               />
             </div>
@@ -248,8 +250,8 @@ export default async function AdminSettingsPage() {
             </label>
             <input
               name="contact_phone_e164"
-              defaultValue={byKey.contact_phone_e164 ?? SITE_CONTACT.phoneE164Digits}
-              placeholder="15145944467"
+              defaultValue={byKey.contact_phone_e164 ?? ""}
+              placeholder={SITE_CONTACT.phoneE164Digits}
               className="w-full max-w-xs border border-cirta-brown/15 bg-white px-3 py-2 text-sm font-mono"
             />
           </div>
@@ -260,9 +262,8 @@ export default async function AdminSettingsPage() {
             <textarea
               name="contact_address"
               rows={5}
-              defaultValue={
-                byKey.contact_address ?? SITE_CONTACT.addressLines.join("\n")
-              }
+              defaultValue={byKey.contact_address ?? ""}
+              placeholder={SITE_CONTACT.addressLines.join("\n")}
               className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm leading-relaxed"
             />
           </div>
@@ -272,7 +273,7 @@ export default async function AdminSettingsPage() {
             </label>
             <input
               name="contact_email_subject"
-              defaultValue={byKey.contact_email_subject ?? DEFAULT_CONTACT_EMAIL_SUBJECT}
+              defaultValue={byKey.contact_email_subject ?? ""}
               placeholder={DEFAULT_CONTACT_EMAIL_SUBJECT}
               className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
             />
@@ -293,8 +294,17 @@ export default async function AdminSettingsPage() {
         <section className="rounded-xl border border-amber-900/15 bg-amber-50/80 p-6">
           <h2 className="font-serif text-lg font-medium text-cirta-brown">Autres clés en base</h2>
           <p className="mt-2 text-sm text-cirta-brown/60">
-            Clés présentes en base mais non classées ci-dessus (migration ou ancien test).
+            Clés présentes en base mais non classées ci-dessus (migration ou ancien test). Les anciennes
+            clés <span className="font-mono">contact_ui_*</span> peuvent être retirées en un clic.
           </p>
+          <form action={purgeOrphanContactSettings} className="mt-4">
+            <button
+              type="submit"
+              className="border border-amber-900/25 bg-white px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown"
+            >
+              Supprimer les clés contact obsolètes
+            </button>
+          </form>
           <ul className="mt-6 space-y-6">
             {orphanRows.map((s) => (
               <li key={s.key}>

@@ -7,22 +7,17 @@ import {
   SocialNetworksRow,
 } from "@/components/SocialAndContactLinks";
 import { useLocale } from "@/context/LocaleContext";
-import { resolveSiteText } from "@/lib/cms-resolve";
-import { contactCopy, cmsMirror, footerCopy } from "@/lib/public-ui-i18n";
-import { resolveSiteContact } from "@/lib/site-contact";
+import { resolveSiteTextStrict } from "@/lib/cms-resolve";
+import { contactCopy, footerCopy } from "@/lib/public-ui-i18n";
+import { hasPublicContactCoordinates, resolveSiteContact } from "@/lib/site-contact";
 
 export function Contact({ settings = {} }: { settings?: Record<string, string> }) {
   const { locale } = useLocale();
-  const mirror = cmsMirror[locale];
   const t = contactCopy[locale];
   const contactInfo = useMemo(() => resolveSiteContact(settings), [settings]);
-  const introT = resolveSiteText(settings, "contact_intro", locale, mirror.contactIntro);
-  const headingT = resolveSiteText(
-    settings,
-    "contact_heading",
-    locale,
-    mirror.contactHeading,
-  );
+  const showCoordinates = hasPublicContactCoordinates(contactInfo);
+  const introT = resolveSiteTextStrict(settings, "contact_intro", locale);
+  const headingT = resolveSiteTextStrict(settings, "contact_heading", locale);
 
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -47,26 +42,42 @@ export function Contact({ settings = {} }: { settings?: Record<string, string> }
               {t.kicker}
             </p>
             <div className="ornament-rule my-7 max-w-[10rem] opacity-55" />
-            <h2
-              id="contact-heading"
-              className="font-serif text-[clamp(1.85rem,3.5vw,2.6rem)] font-medium leading-tight tracking-tight"
-            >
-              {headingT}
-            </h2>
-            <p className="mt-6 text-sm leading-relaxed text-cirta-sand/62">{introT}</p>
-            <address className="mt-10 not-italic text-sm leading-relaxed text-cirta-sand/58">
-              <p className="font-semibold uppercase tracking-[0.18em] text-cirta-sand/78">
-                {t.addressLabel}
-              </p>
-              <SiteAddressLines className="mt-2" contact={contactInfo} />
-              <MailPhoneLinksRow locale={locale} tone="ink" contact={contactInfo} />
-              <div className="mt-6">
+            {headingT ? (
+              <h2
+                id="contact-heading"
+                className="font-serif text-[clamp(1.85rem,3.5vw,2.6rem)] font-medium leading-tight tracking-tight"
+              >
+                {headingT}
+              </h2>
+            ) : (
+              <h2 id="contact-heading" className="sr-only">
+                {t.kicker}
+              </h2>
+            )}
+            {introT ? (
+              <p className="mt-6 text-sm leading-relaxed text-cirta-sand/62">{introT}</p>
+            ) : null}
+            <div className="mt-10 text-sm leading-relaxed text-cirta-sand/58">
+              {showCoordinates ? (
+                <address className="not-italic">
+                  {contactInfo.addressLines.length > 0 ? (
+                    <>
+                      <p className="font-semibold uppercase tracking-[0.18em] text-cirta-sand/78">
+                        {t.addressLabel}
+                      </p>
+                      <SiteAddressLines className="mt-2" contact={contactInfo} />
+                    </>
+                  ) : null}
+                  <MailPhoneLinksRow locale={locale} tone="ink" contact={contactInfo} />
+                </address>
+              ) : null}
+              <div className={showCoordinates ? "mt-6" : ""}>
                 <p className="text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-cirta-sand/55">
                   {footerCopy[locale].socialTitle}
                 </p>
                 <SocialNetworksRow locale={locale} className="mt-3" tone="ink" />
               </div>
-            </address>
+            </div>
           </div>
 
           <div className="lg:col-span-7 lg:col-start-6">
