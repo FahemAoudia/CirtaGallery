@@ -12,7 +12,7 @@ import {
   translateFrenchFields,
   translationSucceeded,
 } from "@/lib/auto-translate";
-import { CONTACT_CMS_FIELD_META } from "@/lib/contact-settings";
+import { CONTACT_INFO_KEYS } from "@/lib/contact-settings";
 import { serializeEntityI18n } from "@/lib/content-i18n";
 import { setAdminFlashMessage } from "@/lib/admin-flash";
 import { prisma } from "@/lib/prisma";
@@ -350,12 +350,10 @@ export async function saveSiteSetting(formData: FormData) {
   revalidatePath("/admin/settings");
 }
 
-const CONTACT_CMS_KEYS = CONTACT_CMS_FIELD_META.map((f) => f.name);
-
-export async function saveContactCmsBlock(formData: FormData) {
+export async function saveContactInfo(formData: FormData) {
   await requirePrimaryAdmin();
   const batch: { key: string; value: string }[] = [];
-  for (const key of CONTACT_CMS_KEYS) {
+  for (const key of CONTACT_INFO_KEYS) {
     const value = String(formData.get(key) ?? "").trim();
     batch.push({ key, value });
     if (!value) {
@@ -368,8 +366,10 @@ export async function saveContactCmsBlock(formData: FormData) {
       });
     }
   }
-  const translated = await persistSiteSettingsI18nBatch(batch);
-  await flashAfterSave("Formulaire contact enregistré.", translated);
+  const translated = await persistSiteSettingsI18nBatch(
+    batch.filter((b) => b.key === "contact_intro" || b.key === "contact_heading"),
+  );
+  await flashAfterSave("Coordonnées et textes contact enregistrés.", translated);
   revalidatePath("/");
   revalidatePath("/admin/settings");
 }

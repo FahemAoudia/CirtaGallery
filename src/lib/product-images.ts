@@ -27,7 +27,7 @@ export const PRODUCT_IMAGE_SLOTS: readonly {
   { slot: "top", labelFr: "Vue de dessus" },
   { slot: "bottom", labelFr: "Vue de dessous" },
   { slot: "back", labelFr: "Face arrière" },
-  { slot: "default", labelFr: "Vue par défaut" },
+  { slot: "default", labelFr: "Défaut de l'article" },
 ] as const;
 
 const SLOT_ORDER = PRODUCT_IMAGE_SLOTS.map((s) => s.slot);

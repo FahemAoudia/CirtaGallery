@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { resolveContactEmailSubject } from "@/lib/site-contact";
+import { prisma } from "@/lib/prisma";
 
 const MAX_NAME = 200;
+const MAX_PHONE = 40;
 const MAX_REF = 500;
+const MAX_PIECE_TITLE = 300;
 const MAX_MESSAGE = 8000;
 
 const DEFAULT_CONTACT_TO = "aoudiafahem1@gmail.com";
@@ -24,7 +28,14 @@ function createTransport() {
 }
 
 export async function POST(req: Request) {
-  let body: { name?: string; email?: string; reference?: string; message?: string };
+  let body: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    reference?: string;
+    pieceTitle?: string;
+    message?: string;
+  };
   try {
     body = (await req.json()) as typeof body;
   } catch {
@@ -38,9 +49,15 @@ export async function POST(req: Request) {
     .trim()
     .toLowerCase()
     .slice(0, 254);
+  const phone = String(body.phone ?? "")
+    .trim()
+    .slice(0, MAX_PHONE);
   const reference = String(body.reference ?? "")
     .trim()
     .slice(0, MAX_REF);
+  const pieceTitle = String(body.pieceTitle ?? "")
+    .trim()
+    .slice(0, MAX_PIECE_TITLE);
   const message = String(body.message ?? "")
     .trim()
     .slice(0, MAX_MESSAGE);
@@ -62,10 +79,19 @@ export async function POST(req: Request) {
     process.env.SMTP_FROM?.trim() ||
     `Cirta Gallery <${process.env.SMTP_USER}>`;
 
+  const settingsRows = await prisma.siteSetting.findMany({
+    where: {
+      key: { in: ["contact_email_subject"] },
+    },
+  });
+  const settings = Object.fromEntries(settingsRows.map((r) => [r.key, r.value]));
+
   const lines = [
     `Nom : ${name}`,
     `Courriel (répondre à) : ${email}`,
+    phone ? `Téléphone : ${phone}` : null,
     reference ? `Réf. catalogue : ${reference}` : null,
+    pieceTitle ? `Titre de l'œuvre : ${pieceTitle}` : null,
     "",
     "— Message —",
     message,
@@ -76,7 +102,7 @@ export async function POST(req: Request) {
       from: fromRaw,
       to,
       replyTo: email,
-      subject: `[Cirta Gallery — Contact] ${name}`,
+      subject: resolveContactEmailSubject(settings, name),
       text: lines.join("\n"),
     });
   } catch (e) {

@@ -248,7 +248,7 @@ function ProductInspectDialogPanel() {
 
   return (
     <div
-      className="fixed inset-0 z-[93] flex items-center justify-center bg-cirta-black/52 p-3 backdrop-blur-[2px] sm:p-6"
+      className="fixed inset-0 z-[93] flex items-center justify-center overflow-hidden bg-cirta-black/52 p-3 backdrop-blur-[2px] sm:p-6"
       role="presentation"
       onClick={close}
     >
@@ -256,23 +256,23 @@ function ProductInspectDialogPanel() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="product-inspect-title"
-        className="relative max-h-[min(96dvh,920px)] w-full max-w-5xl overflow-y-auto border border-cirta-gold/32 bg-cirta-sand shadow-[0_40px_100px_-42px_rgba(0,0,0,0.78)]"
+        className="relative box-border max-h-[min(96dvh,920px)] w-full min-w-0 max-w-[min(80rem,calc(100vw-1.5rem))] overflow-x-hidden overflow-y-auto overscroll-contain border border-cirta-gold/32 bg-cirta-sand shadow-[0_40px_100px_-42px_rgba(0,0,0,0.78)] sm:max-w-5xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="pointer-events-none absolute inset-0 texture-grain opacity-[0.35]" aria-hidden />
 
-        <div className="relative border-b border-cirta-brown/10 bg-gradient-to-br from-cirta-ink to-cirta-brown px-4 py-5 pr-24 text-cirta-sand sm:px-7 sm:py-6 sm:pr-32">
+        <div className="relative min-w-0 border-b border-cirta-brown/10 bg-gradient-to-br from-cirta-ink to-cirta-brown px-4 py-5 pr-14 text-cirta-sand sm:px-7 sm:py-6 sm:pr-32">
           <p className="text-[0.62rem] font-semibold uppercase tracking-[0.38em] text-cirta-gold">
             {i.sheetKicker}
           </p>
-          <div className="mt-2 flex max-w-[min(100%,44rem)] flex-col gap-2.5">
+          <div className="mt-2 flex min-w-0 max-w-full flex-col gap-2.5 pr-10 sm:max-w-[min(100%,44rem)] sm:pr-0">
             <h2
               id="product-inspect-title"
-              className="font-serif text-[clamp(1.2rem,3.2vw,1.85rem)] font-medium leading-snug tracking-tight"
+              className="break-words font-serif text-[clamp(1.2rem,3.2vw,1.85rem)] font-medium leading-snug tracking-tight"
             >
               {display.title}
             </h2>
-            <span className="w-fit rounded-sm border border-cirta-gold/35 bg-cirta-black/25 px-2.5 py-1.5 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-cirta-gold sm:text-[0.72rem]">
+            <span className="w-fit max-w-full truncate rounded-sm border border-cirta-gold/35 bg-cirta-black/25 px-2.5 py-1.5 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-cirta-gold sm:text-[0.72rem]">
               {display.id}
             </span>
           </div>
@@ -290,8 +290,8 @@ function ProductInspectDialogPanel() {
           </button>
         </div>
 
-        <div className="relative grid gap-0 lg:grid-cols-[1.05fr_0.95fr] lg:gap-0">
-          <figure className="relative border-b border-cirta-brown/10 bg-cirta-sand/90 lg:border-b-0 lg:border-r lg:border-cirta-brown/10">
+        <div className="relative grid min-w-0 gap-0 lg:grid-cols-[1.05fr_0.95fr] lg:gap-0">
+          <figure className="relative min-w-0 border-b border-cirta-brown/10 bg-cirta-sand/90 lg:border-b-0 lg:border-r lg:border-cirta-brown/10">
             <div
               ref={stageRef}
               aria-label={i.zoomHint}
@@ -360,7 +360,7 @@ function ProductInspectDialogPanel() {
             </div>
             {activeImage ? (
               <figcaption className="border-t border-cirta-brown/10 bg-cirta-sand/95 px-4 py-2.5 text-center sm:px-6">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-cirta-gold-dim sm:text-[0.72rem]">
+                <p className="break-words text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-cirta-gold-dim sm:text-[0.72rem]">
                   {displayCaption(activeImage)}
                 </p>
                 {gallery.length > 1 ? (
@@ -372,14 +372,14 @@ function ProductInspectDialogPanel() {
             ) : null}
           </figure>
 
-          <div className="relative flex flex-col gap-5 px-5 py-6 sm:px-7 sm:py-8">
-            <div className="space-y-3 text-cirta-brown">
-              <p className="text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/82 sm:text-[0.76rem]">
+          <div className="relative flex min-w-0 flex-col gap-5 overflow-x-hidden px-4 py-6 sm:px-7 sm:py-8">
+            <div className="min-w-0 space-y-3 text-cirta-brown">
+              <p className="break-words text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/82 sm:text-[0.76rem]">
                 {display.period}
                 <span className="mx-1.5 text-cirta-gold-dim/90 sm:mx-2">·</span>
                 {display.origin}
               </p>
-              <p className="text-sm leading-relaxed text-cirta-brown/88 sm:text-[0.95rem]">
+              <p className="break-words text-sm leading-relaxed text-cirta-brown/88 sm:text-[0.95rem]">
                 {display.medium}
               </p>
               <ProductDimensionsGrid
@@ -396,17 +396,17 @@ function ProductInspectDialogPanel() {
             </div>
 
             {display.histoire?.trim() ? (
-              <div className={productDescriptionPanelClass}>
+              <div className={`min-w-0 ${productDescriptionPanelClass}`}>
                 <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-cirta-gold-dim">
                   {t.descriptionLabel}
                 </p>
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-cirta-brown/78">
+                <p className="mt-2 break-words whitespace-pre-wrap text-sm leading-relaxed text-cirta-brown/78">
                   {display.histoire.trim()}
                 </p>
               </div>
             ) : null}
 
-            <div className="mt-auto space-y-5 border-t border-cirta-brown/[0.07] pt-5">
+            <div className="mt-auto min-w-0 space-y-5 border-t border-cirta-brown/[0.07] pt-5">
               <div>
                 <p className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-cirta-brown/48">
                   {t.priceCad}
@@ -417,7 +417,7 @@ function ProductInspectDialogPanel() {
               </div>
 
               {canBuy ? (
-                <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+                <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
                   <div className="flex items-center gap-3">
                     <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown/50">
                       {t.qtyFor}

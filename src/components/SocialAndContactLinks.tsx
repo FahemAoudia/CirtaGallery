@@ -2,10 +2,12 @@
 
 import type { SiteLocale } from "@/lib/site-i18n";
 import {
+  resolveSiteContact,
+  mailtoHref,
+  telHref,
+  whatsAppHref,
   SITE_CONTACT,
-  siteMailtoHref,
-  siteTelHref,
-  siteWhatsAppHref,
+  type ResolvedSiteContact,
 } from "@/lib/site-contact";
 import { socialContactAria } from "@/lib/public-ui-i18n";
 
@@ -132,7 +134,7 @@ export function SocialNetworksRow({
 }: SocialNetworksRowProps) {
   const a = socialContactAria[locale];
   const { facebook, instagram, pinterest, ebay, whatnot } = SITE_CONTACT.social;
-  const wa = siteWhatsAppHref();
+  const wa = whatsAppHref();
   const ic = iconFrame(tone);
 
   return (
@@ -214,7 +216,13 @@ type MailPhoneRowProps = {
 };
 
 /** Courriel + téléphone avec icône */
-export function MailPhoneLinksRow({ locale, linkClassName, tone = "sand" }: MailPhoneRowProps) {
+export function MailPhoneLinksRow({
+  locale,
+  linkClassName,
+  tone = "sand",
+  contact,
+}: MailPhoneRowProps & { contact?: ResolvedSiteContact }) {
+  const c = contact ?? resolveSiteContact({});
   const a = socialContactAria[locale];
   const ic = iconFrame(tone);
   const defaultSand =
@@ -225,26 +233,33 @@ export function MailPhoneLinksRow({ locale, linkClassName, tone = "sand" }: Mail
 
   return (
     <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
-      <a href={siteMailtoHref()} className={base} title={a.mail}>
+      <a href={mailtoHref(c)} className={base} title={a.mail}>
         <span className={ic}>
           <IconMail />
         </span>
-        <span>{SITE_CONTACT.email}</span>
+        <span>{c.email}</span>
       </a>
-      <a href={siteTelHref()} className={base} title={a.phone}>
+      <a href={telHref(c)} className={base} title={a.phone}>
         <span className={ic}>
           <IconPhone />
         </span>
-        <span>{SITE_CONTACT.phoneDisplay}</span>
+        <span>{c.phoneDisplay}</span>
       </a>
     </div>
   );
 }
 
-export function SiteAddressLines({ className = "" }: { className?: string }) {
+export function SiteAddressLines({
+  className = "",
+  contact,
+}: {
+  className?: string;
+  contact?: ResolvedSiteContact;
+}) {
+  const lines = (contact ?? resolveSiteContact({})).addressLines;
   return (
     <p className={className}>
-      {SITE_CONTACT.addressLines.map((line, i) => (
+      {lines.map((line, i) => (
         <span key={line}>
           {i > 0 ? <br /> : null}
           {line}

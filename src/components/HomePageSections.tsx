@@ -75,7 +75,7 @@ export function HomePageSections({
           return <Contact key={s.id} settings={settings} />;
         }
         if (k === "footer") {
-          return <Footer key={s.id} />;
+          return <Footer key={s.id} settings={settings} />;
         }
         return null;
       })}

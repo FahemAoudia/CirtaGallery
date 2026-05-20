@@ -1,21 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   MailPhoneLinksRow,
   SiteAddressLines,
   SocialNetworksRow,
 } from "@/components/SocialAndContactLinks";
 import { useLocale } from "@/context/LocaleContext";
-import { getContactCopyMerged } from "@/lib/contact-settings";
 import { resolveSiteText } from "@/lib/cms-resolve";
-import { cmsMirror, footerCopy } from "@/lib/public-ui-i18n";
+import { contactCopy, cmsMirror, footerCopy } from "@/lib/public-ui-i18n";
+import { resolveSiteContact } from "@/lib/site-contact";
 
 export function Contact({ settings = {} }: { settings?: Record<string, string> }) {
   const { locale } = useLocale();
   const mirror = cmsMirror[locale];
-  const t = getContactCopyMerged(locale, settings);
+  const t = contactCopy[locale];
+  const contactInfo = useMemo(() => resolveSiteContact(settings), [settings]);
   const introT = resolveSiteText(settings, "contact_intro", locale, mirror.contactIntro);
+  const headingT = resolveSiteText(
+    settings,
+    "contact_heading",
+    locale,
+    mirror.contactHeading,
+  );
 
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -44,15 +51,15 @@ export function Contact({ settings = {} }: { settings?: Record<string, string> }
               id="contact-heading"
               className="font-serif text-[clamp(1.85rem,3.5vw,2.6rem)] font-medium leading-tight tracking-tight"
             >
-              {t.heading}
+              {headingT}
             </h2>
             <p className="mt-6 text-sm leading-relaxed text-cirta-sand/62">{introT}</p>
             <address className="mt-10 not-italic text-sm leading-relaxed text-cirta-sand/58">
               <p className="font-semibold uppercase tracking-[0.18em] text-cirta-sand/78">
                 {t.addressLabel}
               </p>
-              <SiteAddressLines className="mt-2" />
-              <MailPhoneLinksRow locale={locale} tone="ink" />
+              <SiteAddressLines className="mt-2" contact={contactInfo} />
+              <MailPhoneLinksRow locale={locale} tone="ink" contact={contactInfo} />
               <div className="mt-6">
                 <p className="text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-cirta-sand/55">
                   {footerCopy[locale].socialTitle}
@@ -78,14 +85,23 @@ export function Contact({ settings = {} }: { settings?: Record<string, string> }
                       const fd = new FormData(e.currentTarget);
                       const name = String(fd.get("name") ?? "").trim();
                       const email = String(fd.get("email") ?? "").trim();
+                      const phone = String(fd.get("phone") ?? "").trim();
                       const reference = String(fd.get("reference") ?? "").trim();
+                      const pieceTitle = String(fd.get("pieceTitle") ?? "").trim();
                       const message = String(fd.get("message") ?? "").trim();
                       setBusy(true);
                       try {
                         const res = await fetch("/api/contact", {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ name, email, reference, message }),
+                          body: JSON.stringify({
+                            name,
+                            email,
+                            phone,
+                            reference,
+                            pieceTitle,
+                            message,
+                          }),
                         });
                         if (!res.ok) {
                           setError(t.sendError);
@@ -141,19 +157,53 @@ export function Contact({ settings = {} }: { settings?: Record<string, string> }
                         />
                       </div>
                     </div>
+                    <div className="grid gap-6 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="phone"
+                          className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-cirta-brown"
+                        >
+                          {t.labelPhone}
+                        </label>
+                        <input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          disabled={busy}
+                          autoComplete="tel"
+                          className="w-full border border-cirta-brown/20 bg-white/70 px-4 py-3 text-base text-cirta-brown outline-none ring-cirta-gold/35 transition placeholder:text-cirta-brown/40 focus:border-cirta-gold focus:ring-2 focus:ring-cirta-gold/30 disabled:opacity-60"
+                          placeholder={t.phPhone}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="reference"
+                          className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-cirta-brown"
+                        >
+                          {t.labelRef}
+                        </label>
+                        <input
+                          id="reference"
+                          name="reference"
+                          disabled={busy}
+                          className="w-full border border-cirta-brown/20 bg-white/70 px-4 py-3 text-base text-cirta-brown outline-none ring-cirta-gold/35 transition placeholder:text-cirta-brown/40 focus:border-cirta-gold focus:ring-2 focus:ring-cirta-gold/30 disabled:opacity-60"
+                          placeholder={t.phRef}
+                        />
+                      </div>
+                    </div>
                     <div className="space-y-2">
                       <label
-                        htmlFor="reference"
+                        htmlFor="pieceTitle"
                         className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-cirta-brown"
                       >
-                        {t.labelRef}
+                        {t.labelPieceTitle}
                       </label>
                       <input
-                        id="reference"
-                        name="reference"
+                        id="pieceTitle"
+                        name="pieceTitle"
                         disabled={busy}
                         className="w-full border border-cirta-brown/20 bg-white/70 px-4 py-3 text-base text-cirta-brown outline-none ring-cirta-gold/35 transition placeholder:text-cirta-brown/40 focus:border-cirta-gold focus:ring-2 focus:ring-cirta-gold/30 disabled:opacity-60"
-                        placeholder={t.phRef}
+                        placeholder={t.phPieceTitle}
                       />
                     </div>
                     <div className="space-y-2">

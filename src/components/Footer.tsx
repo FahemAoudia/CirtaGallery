@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FooterExtraLinks } from "@/components/FooterExtraLinks";
@@ -10,10 +11,12 @@ import {
 } from "@/components/SocialAndContactLinks";
 import { useLocale } from "@/context/LocaleContext";
 import { footerCopyrightLine, footerCopy } from "@/lib/public-ui-i18n";
+import { resolveSiteContact } from "@/lib/site-contact";
 
-export function Footer() {
+export function Footer({ settings = {} }: { settings?: Record<string, string> }) {
   const { locale } = useLocale();
   const f = footerCopy[locale];
+  const contactInfo = useMemo(() => resolveSiteContact(settings), [settings]);
 
   const footerNav = [
     { href: "#collection", label: f.navCollection },
@@ -92,8 +95,8 @@ export function Footer() {
               <p className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-cirta-brown/42">
                 {f.visitsTitle}
               </p>
-              <SiteAddressLines className="mt-3 leading-relaxed" />
-              <MailPhoneLinksRow locale={locale} />
+              <SiteAddressLines className="mt-3 leading-relaxed" contact={contactInfo} />
+              <MailPhoneLinksRow locale={locale} contact={contactInfo} />
             </div>
 
             <div className="border-t border-cirta-brown/10 pt-8">

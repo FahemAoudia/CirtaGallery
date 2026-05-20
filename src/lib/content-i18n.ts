@@ -1,4 +1,3 @@
-import { CONTACT_CMS_FIELD_META } from "@/lib/contact-settings";
 import type { SiteLocale } from "@/lib/site-i18n";
 
 /** Clés SiteSetting pour les traductions auto (JSON { en, es, zh }). */
@@ -22,18 +21,15 @@ export const TRANSLATABLE_SITE_KEYS = [
   "about_p1",
   "about_p2",
   "contact_intro",
+  "contact_heading",
 ] as const;
 
 export type TranslatableSiteKey = (typeof TRANSLATABLE_SITE_KEYS)[number];
 
 const TRANSLATABLE_SITE_SET = new Set<string>(TRANSLATABLE_SITE_KEYS);
 
-export const TRANSLATABLE_CONTACT_KEYS = CONTACT_CMS_FIELD_META.map((f) => f.name);
-
-const TRANSLATABLE_CONTACT_SET = new Set<string>(TRANSLATABLE_CONTACT_KEYS);
-
 export function isTranslatableSiteKey(key: string): boolean {
-  return TRANSLATABLE_SITE_SET.has(key) || TRANSLATABLE_CONTACT_SET.has(key);
+  return TRANSLATABLE_SITE_SET.has(key);
 }
 
 export function siteI18nStorageKey(baseKey: string): string {

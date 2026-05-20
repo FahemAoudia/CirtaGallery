@@ -86,6 +86,38 @@ export function ProductDimensionsGrid({
     );
   }
 
+  if (inspect) {
+    return (
+      <>
+        <div className={`grid min-w-0 grid-cols-2 gap-x-2 gap-y-1.5 sm:hidden ${textClass}`}>
+          {items.map((item, i) => (
+            <DimensionItem
+              key={item.label}
+              label={item.label}
+              value={item.value}
+              textClass={textClass}
+              labelClass={labelClass}
+              className={i === 2 && items.length === 3 ? "col-span-2" : ""}
+            />
+          ))}
+        </div>
+        <p className={`hidden min-w-0 sm:block ${textClass}`}>
+          {items.map((item, i) => (
+            <span key={item.label} className="inline whitespace-nowrap">
+              {i > 0 ? (
+                <span className="mx-1.5 text-cirta-gold/50" aria-hidden>
+                  ·
+                </span>
+              ) : null}
+              <span className={labelClass}>{item.label}</span>
+              <span>{"\u202f"}{item.value}</span>
+            </span>
+          ))}
+        </p>
+      </>
+    );
+  }
+
   return (
     <p className={textClass}>
       {items.map((item, i) => (

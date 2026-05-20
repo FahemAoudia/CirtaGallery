@@ -13,6 +13,7 @@ export const cmsMirror: Record<
     aboutP1: string;
     aboutP2: string;
     contactIntro: string;
+    contactHeading: string;
   }
 > = {
   fr: {
@@ -31,6 +32,7 @@ export const cmsMirror: Record<
       "Cirta Gallery relie Constantine ancienne à Paris, entre bureau d’expertise et vitrine chaleureuse. Ici, une assiette de Sèvres dialogue avec une lampe de Bohême ; un dragon laqué répond à un buste espagnol.",
     contactIntro:
       "Une réponse sous trois jours ouvrés. Les rendez-vous sur place se réservent après échange d’emails.",
+    contactHeading: "Réserver une pièce, un passage au salon ou une expertise",
   },
   en: {
     catalogIntro:
@@ -48,6 +50,7 @@ export const cmsMirror: Record<
       "Cirta Gallery links ancient Constantine to Paris, between appraisal desk and warm showroom. Here a Sèvre plate converses with a Bohemian lamp; a lacquer dragon answers a Spanish bust.",
     contactIntro:
       "A reply within three business days. In-person visits are booked after email exchange.",
+    contactHeading: "Reserve a piece, a salon visit, or an appraisal",
   },
   es: {
     catalogIntro:
@@ -65,6 +68,7 @@ export const cmsMirror: Record<
       "Cirta Gallery une la Constantina antigua con París, entre gabinete de peritaje y vitrina cálida. Aquí un plato de Sèvres dialoga con una lámpara de Bohemia; un dragón lacado responde a un busto español.",
     contactIntro:
       "Respuesta en tres días laborables. Las visitas presenciales se concertarán tras un intercambio por correo.",
+    contactHeading: "Reservar una pieza, una visita al salón o una pericia",
   },
   zh: {
     catalogIntro:
@@ -80,6 +84,7 @@ export const cmsMirror: Record<
     aboutP2:
       "Cirta Gallery 连接古老的君士坦丁与巴黎，介于鉴定案头与温暖展柜之间。塞弗尔瓷盘与波西米亚灯盏对话；漆龙回应西班牙胸像。",
     contactIntro: "三个工作日内回复。实地拜访须在邮件沟通后预约。",
+    contactHeading: "预约洽购、到访沙龙或申请鉴定",
   },
 };
 
@@ -707,8 +712,12 @@ export const contactCopy: Record<
     phName: string;
     labelEmail: string;
     phEmail: string;
+    labelPhone: string;
+    phPhone: string;
     labelRef: string;
     phRef: string;
+    labelPieceTitle: string;
+    phPieceTitle: string;
     labelMessage: string;
     phMessage: string;
     submit: string;
@@ -727,8 +736,12 @@ export const contactCopy: Record<
     phName: "Nom et prénom",
     labelEmail: "Courriel",
     phEmail: "vous@exemple.com",
+    labelPhone: "Téléphone",
+    phPhone: "ex. 514 594 4467",
     labelRef: "Réf. catalogue (optionnel)",
-    phRef: "ex. CG-07, Planche II",
+    phRef: "ex. CG-07",
+    labelPieceTitle: "Titre de l'œuvre (optionnel)",
+    phPieceTitle: "ex. Vase en porcelaine bleu et blanc",
     labelMessage: "Message",
     phMessage:
       "Objet désiré, budget indicatif, dates de visite, ou questions d’authenticité.",
@@ -749,8 +762,12 @@ export const contactCopy: Record<
     phName: "First and last name",
     labelEmail: "Email",
     phEmail: "you@example.com",
+    labelPhone: "Phone",
+    phPhone: "e.g. +1 514 594 4467",
     labelRef: "Catalogue ref. (optional)",
-    phRef: "e.g. CG-07, Plate II",
+    phRef: "e.g. CG-07",
+    labelPieceTitle: "Piece title (optional)",
+    phPieceTitle: "e.g. Blue and white porcelain vase",
     labelMessage: "Message",
     phMessage:
       "Desired object, indicative budget, visit dates, or authenticity questions.",
@@ -771,8 +788,12 @@ export const contactCopy: Record<
     phName: "Nombre y apellidos",
     labelEmail: "Correo",
     phEmail: "usted@ejemplo.com",
+    labelPhone: "Teléfono",
+    phPhone: "p. ej. 514 594 4467",
     labelRef: "Ref. catálogo (opcional)",
-    phRef: "p. ej. CG-07, Lámina II",
+    phRef: "p. ej. CG-07",
+    labelPieceTitle: "Título de la pieza (opcional)",
+    phPieceTitle: "p. ej. Jarrón de porcelana azul y blanco",
     labelMessage: "Mensaje",
     phMessage:
       "Objeto deseado, presupuesto orientativo, fechas de visita o dudas de autenticidad.",
@@ -792,8 +813,12 @@ export const contactCopy: Record<
     phName: "姓名",
     labelEmail: "电子邮箱",
     phEmail: "you@example.com",
+    labelPhone: "电话",
+    phPhone: "例如 +1 514 594 4467",
     labelRef: "目录编号（可选）",
-    phRef: "例如 CG-07，图版 II",
+    phRef: "例如 CG-07",
+    labelPieceTitle: "作品名称（可选）",
+    phPieceTitle: "例如 青花 porcelain 花瓶",
     labelMessage: "留言",
     phMessage: "意向藏品、预算范围、希望到访日期或真伪咨询。",
     submit: "发送",

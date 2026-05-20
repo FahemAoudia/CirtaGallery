@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { saveContactCmsBlock, saveSiteSetting } from "@/app/admin/_actions";
-import { CONTACT_CMS_FIELD_META } from "@/lib/contact-settings";
+import { saveContactInfo, saveSiteSetting } from "@/app/admin/_actions";
+import { DEFAULT_CONTACT_EMAIL_SUBJECT, SITE_CONTACT } from "@/lib/site-contact";
 import { getAdminCookieName, verifyAdminJwt, type AdminRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -16,7 +16,6 @@ const SIMPLE_TEXT_LABELS: Record<string, string> = {
   about_p1: "À propos — premier paragraphe",
   about_p2: "À propos — second paragraphe",
   about_quote_ar: "À propos — citation (arabe, RTL)",
-  contact_intro: "Contact — texte sous le titre (colonne gauche)",
 };
 
 const SIMPLE_TEXT_SECTIONS: { title: string; description?: string; keys: string[] }[] = [
@@ -70,8 +69,13 @@ export default async function AdminSettingsPage() {
   const usedKeys = new Set<string>([
     "collection_teasers_visible",
     "contact_intro",
+    "contact_heading",
+    "contact_email",
+    "contact_phone_display",
+    "contact_phone_e164",
+    "contact_address",
+    "contact_email_subject",
     ...SIMPLE_TEXT_SECTIONS.flatMap((s) => s.keys),
-    ...CONTACT_CMS_FIELD_META.map((f) => f.name),
   ]);
   const orphanRows = rows.filter((r) => !usedKeys.has(r.key));
 
@@ -80,7 +84,7 @@ export default async function AdminSettingsPage() {
       <header>
         <h1 className="admin-page-title">Contenu du site</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cirta-brown/60">
-          Textes d’accueil, bandeau « Notre collection », formulaire de contact (français). L’ordre des grandes
+          Textes d’accueil, bandeau « Notre collection », coordonnées et textes de la section Contact. L’ordre des grandes
           zones :{" "}
           <Link
             href="/admin/sections"
@@ -182,68 +186,107 @@ export default async function AdminSettingsPage() {
       <section className="rounded-xl border border-cirta-brown/10 bg-white/90 p-6 shadow-sm md:p-8">
         <h2 className="font-serif text-xl font-medium text-cirta-brown">Contact</h2>
         <p className="mt-2 text-sm text-cirta-brown/58">
-          L’introduction s’affiche en français sur la vitrine ; les autres langues gardent les textes
-          intégrés au code. Les libellés du formulaire ci-dessous remplacent la version française uniquement
-          (champs vides = texte par défaut du site).
+          Textes de la colonne gauche, coordonnées affichées (courriel, téléphone, adresse) et objet des
+          e-mails reçus via le formulaire. Champs vides = valeurs par défaut du site.
         </p>
 
-        <div className="mt-8 border-t border-cirta-brown/10 pt-8">
-          <h3 className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown/45">
-            Texte d’introduction (colonne gauche)
-          </h3>
-          <form action={saveSiteSetting} className="mt-4 space-y-2">
+        <form action={saveContactInfo} className="mt-8 space-y-6">
+          <div className="space-y-1.5">
+            <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50">
+              Titre principal (colonne gauche)
+            </label>
             <textarea
-              name="value"
-              rows={4}
-              defaultValue={byKey.contact_intro ?? ""}
+              name="contact_heading"
+              rows={2}
+              defaultValue={
+                byKey.contact_heading ??
+                "Réserver une pièce, un passage au salon ou une expertise"
+              }
               className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm leading-relaxed"
             />
-            <input type="hidden" name="key" value="contact_intro" />
-            <button
-              type="submit"
-              className="border border-cirta-gold/45 bg-cirta-gold/10 px-4 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em]"
-            >
-              Enregistrer l’intro
-            </button>
-          </form>
-        </div>
-
-        <div className="mt-10 border-t border-cirta-brown/10 pt-8">
-          <h3 className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-cirta-brown/45">
-            Formulaire — libellés & messages (français)
-          </h3>
-          <form action={saveContactCmsBlock} className="mt-6 space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              {CONTACT_CMS_FIELD_META.map((field) => (
-                <div key={field.name} className="space-y-1.5">
-                  <label
-                    htmlFor={field.name}
-                    className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50"
-                  >
-                    {field.label}
-                    <span className="ml-1.5 font-mono text-[0.6rem] font-normal normal-case text-cirta-brown/35">
-                      {field.name}
-                    </span>
-                  </label>
-                  <textarea
-                    id={field.name}
-                    name={field.name}
-                    rows={field.rows}
-                    defaultValue={byKey[field.name] ?? ""}
-                    placeholder="Laisser vide pour le texte par défaut"
-                    className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm leading-relaxed"
-                  />
-                </div>
-              ))}
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50">
+              Texte d’introduction (sous le titre)
+            </label>
+            <textarea
+              name="contact_intro"
+              rows={3}
+              defaultValue={
+                byKey.contact_intro ??
+                "Une réponse sous trois jours ouvrés. Les rendez-vous sur place se réservent après échange d’emails."
+              }
+              className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm leading-relaxed"
+            />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50">
+                Courriel affiché
+              </label>
+              <input
+                name="contact_email"
+                type="email"
+                defaultValue={byKey.contact_email ?? SITE_CONTACT.email}
+                className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
+              />
             </div>
-            <button
-              type="submit"
-              className="border border-cirta-gold/50 bg-cirta-gold/15 px-5 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em]"
-            >
-              Enregistrer tout le formulaire
-            </button>
-          </form>
-        </div>
+            <div className="space-y-1.5">
+              <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50">
+                Téléphone (affichage)
+              </label>
+              <input
+                name="contact_phone_display"
+                defaultValue={byKey.contact_phone_display ?? SITE_CONTACT.phoneDisplay}
+                className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50">
+              Téléphone (chiffres, WhatsApp / appel)
+            </label>
+            <input
+              name="contact_phone_e164"
+              defaultValue={byKey.contact_phone_e164 ?? SITE_CONTACT.phoneE164Digits}
+              placeholder="15145944467"
+              className="w-full max-w-xs border border-cirta-brown/15 bg-white px-3 py-2 text-sm font-mono"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50">
+              Adresse (une ligne par rangée)
+            </label>
+            <textarea
+              name="contact_address"
+              rows={5}
+              defaultValue={
+                byKey.contact_address ?? SITE_CONTACT.addressLines.join("\n")
+              }
+              className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm leading-relaxed"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cirta-brown/50">
+              Objet de l’e-mail (formulaire)
+            </label>
+            <input
+              name="contact_email_subject"
+              defaultValue={byKey.contact_email_subject ?? DEFAULT_CONTACT_EMAIL_SUBJECT}
+              placeholder={DEFAULT_CONTACT_EMAIL_SUBJECT}
+              className="w-full border border-cirta-brown/15 bg-white px-3 py-2 text-sm"
+            />
+            <p className="text-[0.68rem] text-cirta-brown/45">
+              Utilisez <span className="font-mono">{"{name}"}</span> pour le nom de l’expéditeur.
+            </p>
+          </div>
+          <button
+            type="submit"
+            className="border border-cirta-gold/50 bg-cirta-gold/15 px-5 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em]"
+          >
+            Enregistrer le contact
+          </button>
+        </form>
       </section>
 
       {orphanRows.length > 0 ? (
